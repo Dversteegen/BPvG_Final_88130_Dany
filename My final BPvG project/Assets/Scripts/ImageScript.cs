@@ -5,6 +5,8 @@ using UnityEngine.UI;
 
 public class ImageScript : MonoBehaviour
 {
+    //public static GameManagerScript myGameManagerScript;
+
     public Image opponentImage;
     public Image playerImage;
 
@@ -15,7 +17,7 @@ public class ImageScript : MonoBehaviour
 
     // Start is called before the first frame update
     void Start()
-    {
+    {        
         ChangeOpponentImage();
         ChangePlayerImage();
     }
@@ -27,11 +29,13 @@ public class ImageScript : MonoBehaviour
     }
 
     private void ChangeOpponentImage()
-    {
-        string currentStickmon = PlayerPrefs.GetString("Encounter");
-        Debug.Log(currentStickmon);
+    {        
+        string randomEncounter = GameManagerScript.myGameManagerScript.GetRandomStickmon().GetStickmonName();
+        Debug.Log(randomEncounter);
+        //string currentStickmon = PlayerPrefs.GetString("Encounter");      
+        //Debug.Log(currentStickmon);
 
-        switch (currentStickmon)
+        switch (randomEncounter)
         {
             case "Larry":
                 opponentImage.sprite = firstSprite;
@@ -49,7 +53,7 @@ public class ImageScript : MonoBehaviour
 
     private void ChangePlayerImage()
     {
-        string currentStickmon = PlayerPrefs.GetString("FirstStickmon");
+        string currentStickmon = GameManagerScript.myGameManagerScript.GetFirstStickmon().GetStickmonName();
 
         playerImage.sprite = playerSprite;
     }

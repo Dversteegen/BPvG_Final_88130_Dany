@@ -7,6 +7,8 @@ using TMPro;
 
 public class TextScript : MonoBehaviour
 {
+    //public static GameManagerScript GameManagerScript.myGameManagerScript;
+
     [SerializeField] TextMeshProUGUI playerName;
 
     [SerializeField] TextMeshProUGUI opponentName;
@@ -21,7 +23,7 @@ public class TextScript : MonoBehaviour
 
     private void ChangeNames()
     {
-        playerName.text = PlayerPrefs.GetString("FirstStickmon");
+        playerName.text = GameManagerScript.myGameManagerScript.GetFirstStickmon().GetStickmonName();
         opponentName.text = PlayerPrefs.GetString("Encounter");
     }
 }

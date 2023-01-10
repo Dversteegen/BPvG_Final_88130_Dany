@@ -15,4 +15,14 @@ public class StickmonMove
         //this.type = type;
         this.damage = damage;
     }
+
+    public string GetMoveName()
+    {
+        return this.moveName;
+    }
+
+    public int GetAmountOfDamage()
+    {
+        return this.damage;
+    }
 }

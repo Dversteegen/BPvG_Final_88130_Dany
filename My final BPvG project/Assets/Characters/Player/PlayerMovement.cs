@@ -20,19 +20,20 @@ public class PlayerMovement : MonoBehaviour
 
     public float moveSpeed = 1f;
     public float collisionOffset = 0.05f;
+    private bool isWalking;
     public ContactFilter2D movementFilter;
     Vector2 movementInput;    
     List<RaycastHit2D> castCollisions = new List<RaycastHit2D>();
 
     #endregion
 
-    #region StickmonVariables
-
-    StickmonManager myStickmonManager;
+    #region StickmonVariables    
 
     #endregion
 
     #endregion
+    
+    //GameManagerScript GameManagerScript.myGameManagerScript;
 
     #region StartUp
 
@@ -41,51 +42,83 @@ public class PlayerMovement : MonoBehaviour
     {        
         myBody = GetComponent<Rigidbody2D>();
         myAnimator = GetComponent<Animator>();
-        mySpriteRenderer = GetComponent<SpriteRenderer>();
+        mySpriteRenderer = GetComponent<SpriteRenderer>();        
 
         GetCurrentGameState();
-        SetupData();
+        //SetupData();
     }
 
-    #region SetupFunctions
+    //#region SetupFunctions
 
-    private void SetupData()
-    {
-        myStickmonManager = new StickmonManager();
+    //private void SetupData()
+    //{
+    //    AddAllStickmonMoves();
+    //    AddAllStickmons();
+    //    AddFirstStickmon();
+    //}
 
-        AddAllStickmonMoves();
-        AddAllStickmons();
-    }
+    //#region AddFunctions
 
-    #region AddFunctions
+    //private void AddAllStickmonMoves()
+    //{
+    //    StickmonMove newStickmonMove = new StickmonMove("Punch", 4);        
+    //    GameManagerScript.myGameManagerScript.AddStickmonMove(newStickmonMove);
 
-    private void AddAllStickmonMoves()
-    {
-        StickmonMove newStickmonMove = new StickmonMove("Punch", 5);
-        myStickmonManager.AddStickmonMove(newStickmonMove);
+    //    newStickmonMove = new StickmonMove("Kick", 5);
+    //    GameManagerScript.myGameManagerScript.AddStickmonMove(newStickmonMove);
 
-        newStickmonMove = new StickmonMove("Kick", 6);
-        myStickmonManager.AddStickmonMove(newStickmonMove);
+    //    newStickmonMove = new StickmonMove("Push", 3);
+    //    GameManagerScript.myGameManagerScript.AddStickmonMove(newStickmonMove);
 
-        newStickmonMove = new StickmonMove("Push", 3);
-        myStickmonManager.AddStickmonMove(newStickmonMove);
-    }
+    //    newStickmonMove = new StickmonMove("Beat up", 6);
+    //    GameManagerScript.myGameManagerScript.AddStickmonMove(newStickmonMove);
 
-    private void AddAllStickmons()
-    {
-        Stickmon newStickmon = new Stickmon("Larry", myStickmonManager.GetAllStickmonMoves());
-        myStickmonManager.AddStickmon(newStickmon);
+    //    newStickmonMove = new StickmonMove("Pray", 0);
+    //    GameManagerScript.myGameManagerScript.AddStickmonMove(newStickmonMove);
 
-        newStickmon = new Stickmon("Griffin", myStickmonManager.GetAllStickmonMoves());
-        myStickmonManager.AddStickmon(newStickmon);
+    //    newStickmonMove = new StickmonMove("Sleep", 0);
+    //    GameManagerScript.myGameManagerScript.AddStickmonMove(newStickmonMove);
 
-        newStickmon = new Stickmon("Paul", myStickmonManager.GetAllStickmonMoves());
-        myStickmonManager.AddStickmon(newStickmon);
-    }
+    //    newStickmonMove = new StickmonMove("Break", 8);
+    //    GameManagerScript.myGameManagerScript.AddStickmonMove(newStickmonMove);
 
-    #endregion
+    //    newStickmonMove = new StickmonMove("Squash", 7);
+    //    GameManagerScript.myGameManagerScript.AddStickmonMove(newStickmonMove);
 
-    #endregion
+    //    newStickmonMove = new StickmonMove("Hit brick", 4);
+    //    GameManagerScript.myGameManagerScript.AddStickmonMove(newStickmonMove);
+    //}
+
+    //private void AddAllStickmons()
+    //{
+    //    Stickmon newStickmon = new Stickmon("Larry", GameManagerScript.myGameManagerScript.GetAllStickmonMoves());
+    //    GameManagerScript.myGameManagerScript.AddStickmon(newStickmon);
+
+    //    newStickmon = new Stickmon("Julian", GameManagerScript.myGameManagerScript.GetAllStickmonMoves());
+    //    GameManagerScript.myGameManagerScript.AddStickmon(newStickmon);
+
+    //    newStickmon = new Stickmon("Griffin", GameManagerScript.myGameManagerScript.GetAllStickmonMoves());
+    //    GameManagerScript.myGameManagerScript.AddStickmon(newStickmon);
+
+    //    newStickmon = new Stickmon("Paul", GameManagerScript.myGameManagerScript.GetAllStickmonMoves());
+    //    GameManagerScript.myGameManagerScript.AddStickmon(newStickmon);
+    //}
+
+    //private void AddFirstStickmon()
+    //{
+    //    Stickmon firstStickmon = GameManagerScript.myGameManagerScript.GetFirstStickmon();
+    //    StickmonMove randomStickmonMove = GameManagerScript.myGameManagerScript.GetRandomStandardStickmonMove();
+
+    //    List<StickmonMove> allCurrentMoves = new List<StickmonMove>();
+    //    allCurrentMoves.Add(randomStickmonMove);
+
+    //    CurrentStickmon newAlliedStickmon = new CurrentStickmon(firstStickmon.GetStickmonName(), 5, 0, allCurrentMoves);
+    //    GameManagerScript.myGameManagerScript.AddFirstStickmon(newAlliedStickmon);
+    //}
+
+    //#endregion
+
+    //#endregion
 
     /// <summary>
     /// Detects if the user has been on the battleScene before switching back to this scene
@@ -115,7 +148,7 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-    #endregion
+    #endregion    
 
     private void FixedUpdate()
     {
@@ -166,13 +199,17 @@ public class PlayerMovement : MonoBehaviour
             int count = myBody.Cast(direction, movementFilter, castCollisions, moveSpeed * Time.fixedDeltaTime + collisionOffset);
             if (count == 0)
             {
+                isWalking = true;
+
                 myBody.MovePosition(myBody.position + direction * moveSpeed * Time.fixedDeltaTime);
-                return true;
+                return isWalking;
             }
-            return false;
+            isWalking = false;
+            return isWalking;
+
         } else
         {
-            return false;
+            return isWalking;
         }
     }
 
@@ -183,22 +220,25 @@ public class PlayerMovement : MonoBehaviour
 
     #endregion
 
-    #region BattleScene
+    #region BattleScene    
 
-    private void OnTriggerEnter2D(Collider2D collision)
+    private void OnTriggerStay2D(Collider2D collision)
     {
-        string currentGrass = PlayerPrefs.GetString("CurrentGrass");
-
-        if (collision.tag == "Grass" && collision.name != currentGrass)
+        if (collision.tag == "Grass")
         {
-            PlayerPrefs.SetString("CurrentGrass", collision.name);            
-            CheckGrass();            
+            if (isWalking == true)
+            {                
+                CheckGrass();
+            }            
         }
-    }    
+    }
 
     private void CheckGrass()
-    {        
-        float encounter = Random.Range(0, 19);
+    {
+
+        //Debug.Log(GameManagerScript.myGameManagerScript.GetFirstStickmon().GetStickmonName());
+        float encounter = Random.Range(0, 299);
+        //Debug.Log("Hoi");
         if (encounter == 5)
         {
             FoundEncounter();
@@ -210,7 +250,7 @@ public class PlayerMovement : MonoBehaviour
         PlayerPrefs.SetFloat("PlayerPositionX", myBody.position.x);
         PlayerPrefs.SetFloat("PlayerPositionY", myBody.position.y);
         PlayerPrefs.SetString("GameState", "BattleScene");
-        DetermineEncounter();
+        //DetermineEncounter();
         PlayerPrefs.Save();
 
         SceneManager.LoadScene("BattleScene");
@@ -218,8 +258,30 @@ public class PlayerMovement : MonoBehaviour
 
     private void DetermineEncounter()
     {
-        PlayerPrefs.SetString("Encounter", myStickmonManager.GetRandomStickmon().GetStickmonName());
-        PlayerPrefs.SetString("FirstStickmon", "Julian");
+        PlayerPrefs.SetString("Encounter", GameManagerScript.myGameManagerScript.GetRandomStickmon().GetStickmonName());
+
+        List<CurrentStickmon> allAlliedStickmon = GameManagerScript.myGameManagerScript.GetAllAlliedStickmon();
+
+        for (int count = 0; count < allAlliedStickmon.Count; count++)
+        {
+            switch (count)
+            {
+                case 0:
+                    PlayerPrefs.SetString("FirstStickmonName", allAlliedStickmon[count].GetStickmonName());
+                    PlayerPrefs.SetInt("FirstStickmonLevel", allAlliedStickmon[count].GetStickmonLevel());
+                    PlayerPrefs.SetInt("FirstStickmonExperiencePoints", allAlliedStickmon[count].GetExperiencePoints());
+                    if (allAlliedStickmon[count].GetAmountOfStickmonMoves() == 1)
+                    {
+                        PlayerPrefs.SetString("FirstStickmonFirstMoveName", allAlliedStickmon[count].GetStickmonMove(0).GetMoveName());
+                        PlayerPrefs.SetInt("FirstStickmonFirstMoveDamage", allAlliedStickmon[count].GetStickmonMove(0).GetAmountOfDamage());
+                    }
+                    
+                    break;
+            }
+        }
+        
+        //PlayerPrefs.SetString("FirstStickmonSecondMove", );
+        //PlayerPrefs.SetString("FirstStickmonFirstMove", );
     }
 
     #endregion

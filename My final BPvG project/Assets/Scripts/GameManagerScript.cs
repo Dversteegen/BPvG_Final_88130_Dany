@@ -1,19 +1,47 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
+using System.Linq;
 
-public class StickmonManager
+public class GameManagerScript : MonoBehaviour
 {
+    public static GameManagerScript myGameManagerScript;
+
     private List<StickmonMove> myStickmonMoves;
     private List<Stickmon> myStickmon;
     private List<CurrentStickmon> myAlliedStickmon;
 
-    public StickmonManager()
+    public GameManagerScript()
     {
         myStickmonMoves = new List<StickmonMove>();
         myStickmon = new List<Stickmon>();
         myAlliedStickmon = new List<CurrentStickmon>();
+    }
+    
+    // Start is called before the first frame update
+    //void Start()
+    //{
+    //    DontDestroyOnLoad(gameObject);
+    //}
+
+    void Awake()
+    {
+        MakeThisTheOnlyGameManager();
+    }
+
+    void MakeThisTheOnlyGameManager()
+    {
+        if (myGameManagerScript == null)
+        {
+            DontDestroyOnLoad(gameObject);
+            myGameManagerScript = this;
+        }
+        else
+        {
+            if (myGameManagerScript != this){
+                Destroy(gameObject);
+            }
+        }
     }
 
     #region Stickmon
@@ -31,13 +59,13 @@ public class StickmonManager
             {
                 return stickmon;
             }
-        } 
+        }
         return null;
     }
 
     public Stickmon GetRandomStickmon()
     {
-        Stickmon currentStickmon =  myStickmon[Random.Range(0, myStickmon.Count)];
+        Stickmon currentStickmon = myStickmon[Random.Range(0, myStickmon.Count)];
         return currentStickmon;
     }
 
