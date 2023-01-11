@@ -139,7 +139,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &77052073
 Transform:
   m_ObjectHideFlags: 0
@@ -153,7 +153,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1117977384}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &77052074
 MonoBehaviour:
@@ -202,7 +202,7 @@ RectTransform:
   m_Children:
   - {fileID: 1161845958}
   m_Father: {fileID: 1117977384}
-  m_RootOrder: 2
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -383,7 +383,7 @@ GameObject:
   - component: {fileID: 517847758}
   - component: {fileID: 517847757}
   m_Layer: 5
-  m_Name: Player
+  m_Name: PlayerImage
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -402,7 +402,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1117977384}
-  m_RootOrder: 4
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -563,7 +563,7 @@ RectTransform:
   m_Children:
   - {fileID: 729920260}
   m_Father: {fileID: 1117977384}
-  m_RootOrder: 5
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -620,7 +620,7 @@ GameObject:
   - component: {fileID: 729920262}
   - component: {fileID: 729920261}
   m_Layer: 5
-  m_Name: PlayerStickmon
+  m_Name: PlayerStickmonText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -743,56 +743,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 729920259}
   m_CullTransparentMesh: 1
---- !u!1 &805865755
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 805865756}
-  - component: {fileID: 805865757}
-  m_Layer: 0
-  m_Name: ImageSystem
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &805865756
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 805865755}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -2.8224456, y: -0.47826195, z: -9.932655}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 3
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &805865757
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 805865755}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bc14ba782314cde44b2b02f4c1c72b62, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  opponentImage: {fileID: 969521191}
-  playerImage: {fileID: 517847757}
-  firstSprite: {fileID: 21300000, guid: 5108406f961fc7a41aca241d824fc6c8, type: 3}
-  secondSprite: {fileID: 21300000, guid: 9d736a47abc081d4387e59559fd605e7, type: 3}
-  thirdSprite: {fileID: 21300000, guid: 042f4d35ddae2d541bcda9c0c02c3ef9, type: 3}
-  playerSprite: {fileID: 21300000, guid: 7adbf873a1d448d4fa214e3a07589e07, type: 3}
 --- !u!1 &852975580
 GameObject:
   m_ObjectHideFlags: 0
@@ -825,7 +775,7 @@ RectTransform:
   m_Children:
   - {fileID: 1836219187}
   m_Father: {fileID: 1117977384}
-  m_RootOrder: 6
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -882,7 +832,7 @@ GameObject:
   - component: {fileID: 969521192}
   - component: {fileID: 969521191}
   m_Layer: 5
-  m_Name: Opponent
+  m_Name: OpponentImage
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -901,7 +851,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1117977384}
-  m_RootOrder: 3
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -1038,6 +988,7 @@ RectTransform:
   m_LocalScale: {x: 0, y: 0, z: 0}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 1558182148}
   - {fileID: 77052073}
   - {fileID: 1590737806}
   - {fileID: 310383151}
@@ -1190,6 +1141,58 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1161845957}
   m_CullTransparentMesh: 1
+--- !u!1 &1558182146
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1558182148}
+  - component: {fileID: 1558182147}
+  m_Layer: 0
+  m_Name: BattleSceneSystem
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1558182147
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1558182146}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 58e2759a029702a47a90a758144df972, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  opponentImage: {fileID: 969521191}
+  playerImage: {fileID: 517847757}
+  playerName: {fileID: 729920261}
+  opponentName: {fileID: 1836219188}
+  larrySprite: {fileID: 21300000, guid: 5108406f961fc7a41aca241d824fc6c8, type: 3}
+  paulSprite: {fileID: 21300000, guid: 9d736a47abc081d4387e59559fd605e7, type: 3}
+  griffinSprite: {fileID: 21300000, guid: 042f4d35ddae2d541bcda9c0c02c3ef9, type: 3}
+  julianSprite: {fileID: 21300000, guid: b3850a47b8df11a48ba5fa173feba2e0, type: 3}
+--- !u!4 &1558182148
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1558182146}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 47428.055, y: 17439.205, z: -4633.3516}
+  m_LocalScale: {x: 45, y: 45, z: 45}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1117977384}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1590737805
 GameObject:
   m_ObjectHideFlags: 0
@@ -1221,7 +1224,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1117977384}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -1278,7 +1281,7 @@ GameObject:
   - component: {fileID: 1836219189}
   - component: {fileID: 1836219188}
   m_Layer: 5
-  m_Name: OpponentStickmon
+  m_Name: OpponentStickmonText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

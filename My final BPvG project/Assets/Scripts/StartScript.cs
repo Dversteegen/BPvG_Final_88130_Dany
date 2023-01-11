@@ -17,8 +17,19 @@ public class StartScript : MonoBehaviour
         AddAllStickmonMoves();
         AddAllStickmons();
         AddFirstStickmon();
-
         SceneManager.LoadScene("StartScene");
+    }
+
+    public void StartNewGame()
+    {
+        PlayerPrefs.DeleteAll();
+        SetupData();
+    }
+
+    public void ContinueGame()
+    {        
+        SetupData();
+        //Maybe a function to get the data from playerprefs
     }
 
     #region AddFunctions

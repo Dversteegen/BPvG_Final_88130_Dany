@@ -234,11 +234,9 @@ public class PlayerMovement : MonoBehaviour
     }
 
     private void CheckGrass()
-    {
-
-        //Debug.Log(GameManagerScript.myGameManagerScript.GetFirstStickmon().GetStickmonName());
-        float encounter = Random.Range(0, 299);
-        //Debug.Log("Hoi");
+    {        
+        float encounter = Random.Range(0, 249);
+        
         if (encounter == 5)
         {
             FoundEncounter();

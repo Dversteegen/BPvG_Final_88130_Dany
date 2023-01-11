@@ -18,16 +18,15 @@ public class GameManagerScript : MonoBehaviour
         myAlliedStickmon = new List<CurrentStickmon>();
     }
     
-    // Start is called before the first frame update
-    //void Start()
-    //{
-    //    DontDestroyOnLoad(gameObject);
-    //}
+    void Start()
+    {
+        DontDestroyOnLoad(gameObject);
+    }
 
     void Awake()
     {
         MakeThisTheOnlyGameManager();
-    }
+    }    
 
     void MakeThisTheOnlyGameManager()
     {
@@ -42,7 +41,7 @@ public class GameManagerScript : MonoBehaviour
                 Destroy(gameObject);
             }
         }
-    }
+    }    
 
     #region Stickmon
 
@@ -65,7 +64,9 @@ public class GameManagerScript : MonoBehaviour
 
     public Stickmon GetRandomStickmon()
     {
-        Stickmon currentStickmon = myStickmon[Random.Range(0, myStickmon.Count)];
+        List<Stickmon> allOpponentStickmon = myStickmon.Where(stickmon => stickmon.GetStickmonName() != "Julian").ToList();
+
+        Stickmon currentStickmon = allOpponentStickmon[Random.Range(0, allOpponentStickmon.Count)];
         return currentStickmon;
     }
 

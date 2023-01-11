@@ -4,9 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class ImageScript : MonoBehaviour
-{
-    //public static GameManagerScript myGameManagerScript;
-
+{    
     public Image opponentImage;
     public Image playerImage;
 
@@ -30,10 +28,7 @@ public class ImageScript : MonoBehaviour
 
     private void ChangeOpponentImage()
     {        
-        string randomEncounter = GameManagerScript.myGameManagerScript.GetRandomStickmon().GetStickmonName();
-        Debug.Log(randomEncounter);
-        //string currentStickmon = PlayerPrefs.GetString("Encounter");      
-        //Debug.Log(currentStickmon);
+        string randomEncounter = GameManagerScript.myGameManagerScript.GetRandomStickmon().GetStickmonName();        
 
         switch (randomEncounter)
         {
