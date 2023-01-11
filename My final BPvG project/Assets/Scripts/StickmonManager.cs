@@ -71,6 +71,8 @@ public class StickmonManager
         myAlliedStickmon.Add(alliedStickmon);
     }
 
+    
+
     public List<CurrentStickmon> GetAllAlliedStickmon()
     {
         return myAlliedStickmon;

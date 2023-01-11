@@ -66,28 +66,29 @@ public class StartScript : MonoBehaviour
 
     private void AddAllStickmons()
     {
-        Stickmon newStickmon = new Stickmon("Larry", GameManagerScript.myGameManagerScript.GetAllStickmonMoves());
+        Stickmon newStickmon = new Stickmon("Larry", 12);
         GameManagerScript.myGameManagerScript.AddStickmon(newStickmon);
 
-        newStickmon = new Stickmon("Julian", GameManagerScript.myGameManagerScript.GetAllStickmonMoves());
+        newStickmon = new Stickmon("Julian", 9);
         GameManagerScript.myGameManagerScript.AddStickmon(newStickmon);
 
-        newStickmon = new Stickmon("Griffin", GameManagerScript.myGameManagerScript.GetAllStickmonMoves());
+        newStickmon = new Stickmon("Griffin", 10);
         GameManagerScript.myGameManagerScript.AddStickmon(newStickmon);
 
-        newStickmon = new Stickmon("Paul", GameManagerScript.myGameManagerScript.GetAllStickmonMoves());
+        newStickmon = new Stickmon("Paul", 8);
         GameManagerScript.myGameManagerScript.AddStickmon(newStickmon);
     }
 
     private void AddFirstStickmon()
     {
         Stickmon firstStickmon = GameManagerScript.myGameManagerScript.GetFirstStickmon();
-        StickmonMove randomStickmonMove = GameManagerScript.myGameManagerScript.GetRandomStandardStickmonMove();
+        float maxHealthPoints = firstStickmon.GetBaseHealthPoints();
 
+        StickmonMove randomStickmonMove = GameManagerScript.myGameManagerScript.GetRandomStandardStickmonMove();
         List<StickmonMove> allCurrentMoves = new List<StickmonMove>();
         allCurrentMoves.Add(randomStickmonMove);
 
-        CurrentStickmon newAlliedStickmon = new CurrentStickmon(firstStickmon.GetStickmonName(), 5, 0, allCurrentMoves);
+        CurrentStickmon newAlliedStickmon = new CurrentStickmon(firstStickmon.GetStickmonName(), 1, 0, maxHealthPoints, allCurrentMoves);
         GameManagerScript.myGameManagerScript.AddFirstStickmon(newAlliedStickmon);
     }
 

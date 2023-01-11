@@ -100,6 +100,11 @@ public class GameManagerScript : MonoBehaviour
         myAlliedStickmon.Add(alliedStickmon);
     }
 
+    public CurrentStickmon GetFirstAlliedStickmon()
+    {
+        return myAlliedStickmon[0];
+    }
+
     public List<CurrentStickmon> GetAllAlliedStickmon()
     {
         return myAlliedStickmon;

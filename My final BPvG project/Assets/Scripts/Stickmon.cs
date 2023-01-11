@@ -4,16 +4,15 @@ using UnityEngine;
 
 public class Stickmon
 {
-    private string name;    
-    private List<StickmonMove> allPossibleMoves;
-    private Texture2D stickmonSprite;    
-
-    //public Stickmon(string name, List<StickmonMove>allmoves, Texture2D stickmonSprite)
-    public Stickmon(string name, List<StickmonMove> allmoves)
+    private string name;
+    private float baseHealthPoints;
+    //private List<StickmonMove> allPossibleMoves;
+    private Texture2D stickmonSprite;
+    
+    public Stickmon(string c_name, float c_baseHealthPoints)
     {
-        this.name = name;
-        this.allPossibleMoves = allmoves;
-        //this.stickmonSprite = stickmonSprite;
+        this.name = c_name;
+        this.baseHealthPoints = c_baseHealthPoints;
     }
 
     public string GetStickmonName()
@@ -21,8 +20,8 @@ public class Stickmon
         return name;
     }
 
-    //public List<StickmonMove> GetAllPossibleStickmonMoves()
-    //{
-
-    //}
+    public float GetBaseHealthPoints()
+    {
+        return baseHealthPoints;
+    }    
 }

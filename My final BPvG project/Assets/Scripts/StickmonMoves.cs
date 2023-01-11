@@ -9,11 +9,11 @@ public class StickmonMove
     private int damage;
 
     //public StickmonMove(string moveName, string type, int damage)
-    public StickmonMove(string moveName, int damage)
+    public StickmonMove(string c_moveName, int c_damage)
     {
-        this.moveName = moveName;
+        this.moveName = c_moveName;
         //this.type = type;
-        this.damage = damage;
+        this.damage = c_damage;
     }
 
     public string GetMoveName()
