@@ -4,80 +4,87 @@ using UnityEngine;
 
 public class CurrentStickmon
 {
-    private string name;
+    private string _name;
 
-    private int level;
-    private int experiencePoints;
-    private float maxHealthPoints;
-    private float currentHealthPoints;
+    private int _level;
+    private float _experiencePoints;
+    private float _maxHealthPoints;
+    private float _currentHealthPoints;
 
-    private List<StickmonMove> allCurrentMoves;
+    private List<StickmonMove> _allCurrentMoves;
 
-    public CurrentStickmon(string c_name, int c_level, int c_experiencePoints, float c_maxHealthPoints, List<StickmonMove> c_allCurrentMoves)
+    public CurrentStickmon(string name, int level, float experiencePoints, float maxHealthPoints, List<StickmonMove> allCurrentMoves)
     {
-        this.name = c_name;
-        this.level = c_level;
-        this.experiencePoints = c_experiencePoints;
-        this.maxHealthPoints = c_maxHealthPoints;
-        this.currentHealthPoints = c_maxHealthPoints;
-        this.allCurrentMoves = c_allCurrentMoves;
+        _name = name;
+        _level = level;
+        _experiencePoints = experiencePoints;
+        _maxHealthPoints = maxHealthPoints;
+        _currentHealthPoints = maxHealthPoints;
+        _allCurrentMoves = allCurrentMoves;
     }
 
     #region GetFunctions
 
     public string GetStickmonName()
     {
-        return name;
+        return _name;
     }
 
     public int GetStickmonLevel()
     {
-        return level;
+        return _level;
     }
 
-    public int GetExperiencePoints()
+    public float GetExperiencePoints()
     {
-        return experiencePoints;
+        return _experiencePoints;
     }
 
     public float GetMaxHealthPoints()
     {
-        return maxHealthPoints;
+        return _maxHealthPoints;
     }
 
     public float GetCurrentHealthPoints()
     {
-        return currentHealthPoints;
+        return _currentHealthPoints;
     }
 
     #endregion
 
-    public bool AddExperiencePoints(int amountOfNewExperiencePoints)
+    public bool AddExperiencePoints(float amountOfNewExperiencePoints)
     {
-        this.experiencePoints += amountOfNewExperiencePoints;
+        _experiencePoints += amountOfNewExperiencePoints;
 
-        switch (this.experiencePoints)
+        switch (_experiencePoints)
         {
-            case 100:
+            case >5:
                 //Check if there's a new level
+                _level++;
                 return true;
         }
         return false;
     }
 
+    public float IncreaseMaxHealth(float amountOfHealth)
+    {
+        _maxHealthPoints += amountOfHealth;
+        return _maxHealthPoints;
+    }
+
     public int GetAmountOfStickmonMoves()
     {
-        return allCurrentMoves.Count;
+        return _allCurrentMoves.Count;
     }
 
     public StickmonMove GetStickmonMove(int index)
     {
-        return allCurrentMoves[index];
+        return _allCurrentMoves[index];
     }
 
     public List<StickmonMove>GetAllStickmonMoves()
     {
-        return allCurrentMoves;
+        return _allCurrentMoves;
     }
 
 }

@@ -4,25 +4,25 @@ using UnityEngine;
 
 public class StickmonMove
 {
-    private string moveName;
+    private string _moveName;
     //private string type;
-    private int damage;
+    private int _damage;
 
     //public StickmonMove(string moveName, string type, int damage)
-    public StickmonMove(string c_moveName, int c_damage)
+    public StickmonMove(string moveName, int damage)
     {
-        this.moveName = c_moveName;
+        _moveName = moveName;
         //this.type = type;
-        this.damage = c_damage;
+        _damage = damage;
     }
 
     public string GetMoveName()
     {
-        return this.moveName;
+        return _moveName;
     }
 
     public int GetAmountOfDamage()
     {
-        return this.damage;
+        return _damage;
     }
 }

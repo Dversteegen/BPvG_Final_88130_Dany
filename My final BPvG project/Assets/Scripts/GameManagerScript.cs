@@ -11,6 +11,8 @@ public class GameManagerScript : MonoBehaviour
     private List<Stickmon> myStickmon;
     private List<CurrentStickmon> myAlliedStickmon;
 
+    //private Encounter _currentEncounter;
+
     public GameManagerScript()
     {
         myStickmonMoves = new List<StickmonMove>();
@@ -111,4 +113,18 @@ public class GameManagerScript : MonoBehaviour
     }
 
     #endregion
+
+    //#region Encounter
+
+    //public void DefineCurrentEncounter(Encounter currentEncounter)
+    //{
+    //    _currentEncounter = currentEncounter;
+    //}
+
+    ////public bool SubtractDamage(float amountOfDamage)
+    ////{
+
+    ////} 
+
+    //#endregion
 }
