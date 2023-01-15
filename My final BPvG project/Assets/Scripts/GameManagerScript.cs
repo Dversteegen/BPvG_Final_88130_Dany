@@ -88,6 +88,13 @@ public class GameManagerScript : MonoBehaviour
         return allPossibleMoves[Random.Range(0, allPossibleMoves.Count)];
     }
 
+    public StickmonMove GetRandomNewStickmonMove(StickmonMove firstStickmonMove)
+    {
+        List<StickmonMove> allPossibleMoves = myStickmonMoves.Where(move => move != firstStickmonMove && move.GetAmountOfDamage() >= 6).Select(move => move).ToList();
+
+        return allPossibleMoves[Random.Range(0, allPossibleMoves.Count)];
+    }
+
     public List<StickmonMove> GetAllStickmonMoves()
     {
         return myStickmonMoves;

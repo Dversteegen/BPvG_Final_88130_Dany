@@ -4,10 +4,10 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class StartScript : MonoBehaviour
-{    
+{
     private void Start()
     {
-        
+
     }
 
     #region SetupFunctions
@@ -27,7 +27,7 @@ public class StartScript : MonoBehaviour
     }
 
     public void ContinueGame()
-    {        
+    {
         SetupData();
         //Maybe a function to get the data from playerprefs
     }
@@ -48,11 +48,11 @@ public class StartScript : MonoBehaviour
         newStickmonMove = new StickmonMove("Beat up", 6);
         GameManagerScript.myGameManagerScript.AddStickmonMove(newStickmonMove);
 
-        newStickmonMove = new StickmonMove("Pray", 0);
-        GameManagerScript.myGameManagerScript.AddStickmonMove(newStickmonMove);
+        //newStickmonMove = new StickmonMove("Pray", 0);
+        //GameManagerScript.myGameManagerScript.AddStickmonMove(newStickmonMove);
 
-        newStickmonMove = new StickmonMove("Sleep", 0);
-        GameManagerScript.myGameManagerScript.AddStickmonMove(newStickmonMove);
+        //newStickmonMove = new StickmonMove("Sleep", 0);
+        //GameManagerScript.myGameManagerScript.AddStickmonMove(newStickmonMove);
 
         newStickmonMove = new StickmonMove("Break", 8);
         GameManagerScript.myGameManagerScript.AddStickmonMove(newStickmonMove);
@@ -84,11 +84,27 @@ public class StartScript : MonoBehaviour
         Stickmon firstStickmon = GameManagerScript.myGameManagerScript.GetFirstStickmon();
         float maxHealthPoints = firstStickmon.GetBaseHealthPoints();
 
+        for (int count = 0; count < 2; count++)
+        {
+            int randomNumber = Random.Range(0, 2);
+
+            if (randomNumber == 0)
+            {
+                maxHealthPoints++;
+            }
+            else if (randomNumber == 2)
+            {
+                maxHealthPoints += 2;
+            }
+        }
+
         StickmonMove randomStickmonMove = GameManagerScript.myGameManagerScript.GetRandomStandardStickmonMove();
         List<StickmonMove> allCurrentMoves = new List<StickmonMove>();
         allCurrentMoves.Add(randomStickmonMove);
 
-        CurrentStickmon newAlliedStickmon = new CurrentStickmon(firstStickmon.GetStickmonName(), 1, 0, maxHealthPoints, allCurrentMoves);
+        randomStickmonMove = GameManagerScript.myGameManagerScript.GetRandomNewStickmonMove(randomStickmonMove);
+
+        CurrentStickmon newAlliedStickmon = new CurrentStickmon(firstStickmon.GetStickmonName(), 3, 0, maxHealthPoints, allCurrentMoves);
         GameManagerScript.myGameManagerScript.AddFirstStickmon(newAlliedStickmon);
     }
 

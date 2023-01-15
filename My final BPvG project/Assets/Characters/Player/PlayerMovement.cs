@@ -77,6 +77,11 @@ public class PlayerMovement : MonoBehaviour
     {
         #region Moving
 
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            FoundEncounter();
+        }
+
         //Moving
         if (movementInput != Vector2.zero)
         {
@@ -174,7 +179,7 @@ public class PlayerMovement : MonoBehaviour
         PlayerPrefs.Save();
 
         SceneManager.LoadScene("BattleScene");
-    }   
+    }
 
-    #endregion
+    #endregion    
 }

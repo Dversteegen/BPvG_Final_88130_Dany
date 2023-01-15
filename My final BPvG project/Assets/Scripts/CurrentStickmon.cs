@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 public class CurrentStickmon
 {
@@ -12,6 +13,7 @@ public class CurrentStickmon
     private float _currentHealthPoints;
 
     private List<StickmonMove> _allCurrentMoves;
+    private int[] _allLevelBarriers;
 
     public CurrentStickmon(string name, int level, float experiencePoints, float maxHealthPoints, List<StickmonMove> allCurrentMoves)
     {
@@ -21,6 +23,7 @@ public class CurrentStickmon
         _maxHealthPoints = maxHealthPoints;
         _currentHealthPoints = maxHealthPoints;
         _allCurrentMoves = allCurrentMoves;
+        _allLevelBarriers = new int[] { 5, 11, 18, 26, 35, 47 };
     }
 
     #region GetFunctions
@@ -52,22 +55,81 @@ public class CurrentStickmon
 
     #endregion
 
+    #region DuringBattle
+
+    public bool DecreaseHealth(float amountOfDamage)
+    {
+        if (_currentHealthPoints - amountOfDamage >= 0)
+        {
+            _currentHealthPoints -= amountOfDamage;
+            return false;
+        }
+        else
+        {
+            return true;
+        }
+    }
+
+    #endregion
+
     public bool AddExperiencePoints(float amountOfNewExperiencePoints)
     {
         _experiencePoints += amountOfNewExperiencePoints;
 
-        switch (_experiencePoints)
+        if (_experiencePoints > _allLevelBarriers[0])
         {
-            case >5:
-                //Check if there's a new level
-                _level++;
-                return true;
+            _allLevelBarriers = _allLevelBarriers.Where(level => level == _allLevelBarriers[0]).ToArray();
+            _level++;
+            return true;
         }
-        return false;
+        else
+        {
+            return false;
+        }
     }
+
+    //public bool AddExperiencePoints(float amountOfNewExperiencePoints)
+    //{
+    //    _experiencePoints += amountOfNewExperiencePoints;
+
+    //    switch (_experiencePoints)
+    //    {
+    //        case > 46:
+    //            //Check if there's a new level                
+    //            _level++;
+    //            return true;                
+
+    //        case > 35:
+    //            //Check if there's a new level
+    //            _level++;
+    //            return true;
+
+    //        case > 26:
+    //            //Check if there's a new level
+    //            _level++;
+    //            return true;
+
+    //        case > 18:
+    //            //Check if there's a new level
+    //            _level++;
+    //            return true;
+
+    //        case > 11:
+    //            //Check if there's a new level
+    //            _level++;
+    //            return true;
+
+    //        case > 5:
+    //            //Check if there's a new level                
+    //            _level++;
+    //            return true;
+    //    }
+    //    return false;
+    //}
 
     public float IncreaseMaxHealth(float amountOfHealth)
     {
+        _currentHealthPoints += amountOfHealth;
         _maxHealthPoints += amountOfHealth;
         return _maxHealthPoints;
     }
@@ -82,7 +144,7 @@ public class CurrentStickmon
         return _allCurrentMoves[index];
     }
 
-    public List<StickmonMove>GetAllStickmonMoves()
+    public List<StickmonMove> GetAllStickmonMoves()
     {
         return _allCurrentMoves;
     }
