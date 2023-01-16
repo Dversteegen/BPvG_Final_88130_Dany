@@ -57,7 +57,6 @@ public class BattleSceneScript : MonoBehaviour
     private bool opponentHasAttacked = false;
     private bool battleIsOver = false;
     private bool experiencePointsCalculated = false;
-    private bool hasANewLevel = false;
     private bool playerTurn = false;
 
     List<string> upComingLines = new List<string>();
@@ -70,9 +69,6 @@ public class BattleSceneScript : MonoBehaviour
         _currentEncounter = GetEncounter();
         SetUpOpponent();
         SetUpText();
-
-        //DefineFirstAttacker();
-
     }
 
     #region SetUpBattleScene
@@ -96,7 +92,6 @@ public class BattleSceneScript : MonoBehaviour
         playerName.text = firstStickmon.GetStickmonName();
 
         List<StickmonMove> allStickmonMoves = firstStickmon.GetAllStickmonMoves();
-        firstStickmon.AddExperiencePoints(5);
 
         SetUpPlayerMoves(allStickmonMoves);
         SetUpPlayerData(firstStickmon);
@@ -166,7 +161,7 @@ public class BattleSceneScript : MonoBehaviour
     private int GetEncounterLevel(int firstStickmonLevel)
     {
         int encounterLevel = firstStickmonLevel;
-        int randomNumber = Random.Range(0, 4);
+        int randomNumber = Random.Range(0, 5);
         switch (randomNumber)
         {
             case 0:
@@ -203,7 +198,7 @@ public class BattleSceneScript : MonoBehaviour
 
         for (int count = 0; count < levelDifference; count++)
         {
-            int randomNumber = Random.Range(0, 2);
+            int randomNumber = Random.Range(0, 3);
 
             if (randomNumber == 0)
             {
@@ -253,7 +248,8 @@ public class BattleSceneScript : MonoBehaviour
 
     private void DefineFirstAttacker()
     {
-        int randomNumber = Random.Range(0, 1);
+        int randomNumber = Random.Range(0, 2);
+        Debug.Log(randomNumber);
         if (randomNumber == 0)
         {
             playerTurn = true;
@@ -311,7 +307,7 @@ public class BattleSceneScript : MonoBehaviour
         else
         {
             opponentHealth.text = $"Health: 0/{_currentEncounter.GetEncounterMaxHealth()}";
-            battleSceneText.text = $"{_currentEncounter.GetEncounterName()} isn't able to continue fighting";
+            upComingLines.Add($"{_currentEncounter.GetEncounterName()} isn't able to continue fighting");
             opponentImage.enabled = false;
             battleIsOver = true;
         }
@@ -344,7 +340,7 @@ public class BattleSceneScript : MonoBehaviour
     }
 
     private void AddExperiencePoints(CurrentStickmon firstStickmon, float amountOfExperiencePoints)
-    {        
+    {
         bool levelIncreased = firstStickmon.AddExperiencePoints(amountOfExperiencePoints);
         if (levelIncreased == true)
         {
@@ -397,7 +393,7 @@ public class BattleSceneScript : MonoBehaviour
                 break;
 
             case > 1:
-                int randomNumber = Random.Range(0, allStickmonMoves.Count - 1);
+                int randomNumber = Random.Range(0, allStickmonMoves.Count);
                 opponentMove = allStickmonMoves[randomNumber].GetMoveName();
                 moveDamage = allStickmonMoves[randomNumber].GetAmountOfDamage();
                 break;
@@ -411,6 +407,7 @@ public class BattleSceneScript : MonoBehaviour
             playerHealth.text = $"Health: {firstStickmon.GetCurrentHealthPoints()}/{firstStickmon.GetMaxHealthPoints()}";
         }
         opponentHasAttacked = true;
+        playerTurn = true;
     }
 
     #endregion
@@ -478,14 +475,12 @@ public class BattleSceneScript : MonoBehaviour
     {
         continueTextButton.enabled = true;
         if (upComingLines.Count > 0)
-        {
-            Debug.Log("1");
+        {            
             battleSceneText.text = upComingLines[0];
             upComingLines.RemoveAt(0);
-        }
-        else if (beginOfBattle == true || (opponentHasAttacked == true && battleIsOver == false))
-        {
-            Debug.Log("2");
+        }        
+        else if (playerTurn == true && battleIsOver == false)
+        {            
             battleSceneText.text = $"Choose a move:";
 
             continueTextButton.enabled = false;
@@ -494,19 +489,16 @@ public class BattleSceneScript : MonoBehaviour
             playerCanAttack = true;
             opponentHasAttacked = false;
         }
-        else if (opponentHasAttacked == false && playerTurn == false && battleIsOver == false)
-        {
-            Debug.Log("3");
+        else if (playerTurn == false && battleIsOver == false)
+        {            
             OpponentAttack();
         }
         else if (battleIsOver == true && experiencePointsCalculated == false)
-        {
-            Debug.Log("4");
+        {            
             CalculateExperiencePoints();
         }
         else
-        {
-            Debug.Log("5");
+        {            
             GoBack();
         }
     }

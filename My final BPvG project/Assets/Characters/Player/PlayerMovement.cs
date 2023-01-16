@@ -22,25 +22,25 @@ public class PlayerMovement : MonoBehaviour
     public float collisionOffset = 0.05f;
     private bool isWalking;
     public ContactFilter2D movementFilter;
-    Vector2 movementInput;    
+    Vector2 movementInput;
     List<RaycastHit2D> castCollisions = new List<RaycastHit2D>();
 
     #endregion
 
     #endregion
-    
+
     //GameManagerScript GameManagerScript.myGameManagerScript;
 
     #region StartUp
 
     // Start is called before the first frame update
     void Start()
-    {        
+    {
         myBody = GetComponent<Rigidbody2D>();
         myAnimator = GetComponent<Animator>();
-        mySpriteRenderer = GetComponent<SpriteRenderer>();        
+        mySpriteRenderer = GetComponent<SpriteRenderer>();
 
-        GetCurrentGameState();        
+        GetCurrentGameState();
     }
 
     /// <summary>
@@ -73,6 +73,11 @@ public class PlayerMovement : MonoBehaviour
 
     #endregion    
 
+    private void Update()
+    {
+
+    }
+
     private void FixedUpdate()
     {
         #region Moving
@@ -89,7 +94,7 @@ public class PlayerMovement : MonoBehaviour
 
             if (!canMove)
             {
-                canMove = TryMove(new Vector2(movementInput.x, 0));                
+                canMove = TryMove(new Vector2(movementInput.x, 0));
             }
 
             if (!canMove)
@@ -104,12 +109,13 @@ public class PlayerMovement : MonoBehaviour
             myAnimator.SetBool("isMoving", false);
         }
 
-        if(movementInput.x < 0)
+        if (movementInput.x < 0)
         {
             mySpriteRenderer.flipX = true;
             PlayerPrefs.SetString("isFlipped", "true");
 
-        } else if (movementInput.x > 0)
+        }
+        else if (movementInput.x > 0)
         {
             mySpriteRenderer.flipX = false;
             PlayerPrefs.SetString("isFlipped", "false");
@@ -135,36 +141,42 @@ public class PlayerMovement : MonoBehaviour
             isWalking = false;
             return isWalking;
 
-        } else
+        }
+        else
         {
             return isWalking;
         }
     }
 
-    void OnMove(InputValue movementValue)        
+    void OnMove(InputValue movementValue)
     {
-        movementInput = movementValue.Get<Vector2>();        
+        movementInput = movementValue.Get<Vector2>();
     }
 
     #endregion
 
-    #region BattleScene    
+    #region BattleScene        
 
     private void OnTriggerStay2D(Collider2D collision)
     {
         if (collision.tag == "Grass")
         {
             if (isWalking == true)
-            {                
+            {
                 CheckGrass();
-            }            
+            }
+        }
+
+        if (collision.tag == "BattleDetector")
+        {
+            FoundEncounter();
         }
     }
 
     private void CheckGrass()
-    {        
+    {
         float encounter = Random.Range(0, 249);
-        
+
         if (encounter == 5)
         {
             FoundEncounter();
@@ -175,11 +187,11 @@ public class PlayerMovement : MonoBehaviour
     {
         PlayerPrefs.SetFloat("PlayerPositionX", myBody.position.x);
         PlayerPrefs.SetFloat("PlayerPositionY", myBody.position.y);
-        PlayerPrefs.SetString("GameState", "BattleScene");        
+        PlayerPrefs.SetString("GameState", "BattleScene");
         PlayerPrefs.Save();
 
         SceneManager.LoadScene("BattleScene");
     }
 
-    #endregion    
+    #endregion
 }

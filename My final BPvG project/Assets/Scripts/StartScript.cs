@@ -48,12 +48,6 @@ public class StartScript : MonoBehaviour
         newStickmonMove = new StickmonMove("Beat up", 6);
         GameManagerScript.myGameManagerScript.AddStickmonMove(newStickmonMove);
 
-        //newStickmonMove = new StickmonMove("Pray", 0);
-        //GameManagerScript.myGameManagerScript.AddStickmonMove(newStickmonMove);
-
-        //newStickmonMove = new StickmonMove("Sleep", 0);
-        //GameManagerScript.myGameManagerScript.AddStickmonMove(newStickmonMove);
-
         newStickmonMove = new StickmonMove("Break", 8);
         GameManagerScript.myGameManagerScript.AddStickmonMove(newStickmonMove);
 
@@ -103,8 +97,9 @@ public class StartScript : MonoBehaviour
         allCurrentMoves.Add(randomStickmonMove);
 
         randomStickmonMove = GameManagerScript.myGameManagerScript.GetRandomNewStickmonMove(randomStickmonMove);
+        allCurrentMoves.Add(randomStickmonMove);
 
-        CurrentStickmon newAlliedStickmon = new CurrentStickmon(firstStickmon.GetStickmonName(), 3, 0, maxHealthPoints, allCurrentMoves);
+        CurrentStickmon newAlliedStickmon = new CurrentStickmon(firstStickmon.GetStickmonName(), 3, 11, maxHealthPoints, allCurrentMoves);
         GameManagerScript.myGameManagerScript.AddFirstStickmon(newAlliedStickmon);
     }
 

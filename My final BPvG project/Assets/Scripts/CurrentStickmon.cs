@@ -23,7 +23,7 @@ public class CurrentStickmon
         _maxHealthPoints = maxHealthPoints;
         _currentHealthPoints = maxHealthPoints;
         _allCurrentMoves = allCurrentMoves;
-        _allLevelBarriers = new int[] { 5, 11, 18, 26, 35, 47 };
+        _allLevelBarriers = new int[] { 18, 26, 35, 47, 61, 78, 92, 109, 133 };
     }
 
     #region GetFunctions
@@ -77,8 +77,8 @@ public class CurrentStickmon
         _experiencePoints += amountOfNewExperiencePoints;
 
         if (_experiencePoints > _allLevelBarriers[0])
-        {
-            _allLevelBarriers = _allLevelBarriers.Where(level => level == _allLevelBarriers[0]).ToArray();
+        {            
+            _allLevelBarriers = _allLevelBarriers.Where(level => level != _allLevelBarriers[0]).ToArray();            
             _level++;
             return true;
         }
@@ -87,45 +87,6 @@ public class CurrentStickmon
             return false;
         }
     }
-
-    //public bool AddExperiencePoints(float amountOfNewExperiencePoints)
-    //{
-    //    _experiencePoints += amountOfNewExperiencePoints;
-
-    //    switch (_experiencePoints)
-    //    {
-    //        case > 46:
-    //            //Check if there's a new level                
-    //            _level++;
-    //            return true;                
-
-    //        case > 35:
-    //            //Check if there's a new level
-    //            _level++;
-    //            return true;
-
-    //        case > 26:
-    //            //Check if there's a new level
-    //            _level++;
-    //            return true;
-
-    //        case > 18:
-    //            //Check if there's a new level
-    //            _level++;
-    //            return true;
-
-    //        case > 11:
-    //            //Check if there's a new level
-    //            _level++;
-    //            return true;
-
-    //        case > 5:
-    //            //Check if there's a new level                
-    //            _level++;
-    //            return true;
-    //    }
-    //    return false;
-    //}
 
     public float IncreaseMaxHealth(float amountOfHealth)
     {
