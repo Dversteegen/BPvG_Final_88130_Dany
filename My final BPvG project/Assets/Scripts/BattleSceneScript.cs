@@ -41,12 +41,7 @@ public class BattleSceneScript : MonoBehaviour
     #endregion
 
     #region Sprites
-
-    [Header("Sprites")]
-    public Sprite larrySprite;
-    public Sprite paulSprite;
-    public Sprite griffinSprite;
-    public Sprite julianSprite;
+    
 
     #endregion
 
@@ -60,16 +55,25 @@ public class BattleSceneScript : MonoBehaviour
     private bool playerTurn = false;
 
     List<string> upComingLines = new List<string>();
+    List<Encounter> allCurrentEncounters = new List<Encounter>();
 
     //private void Start()
     void Start()
-    {
-        //This needs to be above the GetComponent lines for the text, god knows why
+    {        
         SetUpPlayer();
-        _currentEncounter = GetEncounter();
+
+        if (PlayerPrefs.GetString("BattleType") == "Encounter")
+        {
+            _currentEncounter = GetEncounter();
+        }
+        else
+        {
+            allCurrentEncounters = new List<Encounter>();
+        }
+        
         SetUpOpponent();
         SetUpText();
-    }
+    }    
 
     #region SetUpBattleScene
 
@@ -83,12 +87,13 @@ public class BattleSceneScript : MonoBehaviour
 
     private void SetUpPlayerStickmon(CurrentStickmon firstStickmon)
     {
-        switch (firstStickmon.GetStickmonName())
-        {
-            case "Julian":
-                playerImage.sprite = julianSprite;
-                break;
-        }
+        //switch (firstStickmon.GetStickmonName())
+        //{
+        //    case "Julian":
+        //        playerImage.sprite = julianSprite;
+        //        break;
+        //}
+        playerImage.sprite = firstStickmon.GetStickmonSprite();
         playerName.text = firstStickmon.GetStickmonName();
 
         List<StickmonMove> allStickmonMoves = firstStickmon.GetAllStickmonMoves();
@@ -154,7 +159,7 @@ public class BattleSceneScript : MonoBehaviour
         StickmonMove currentStickmonMove = GameManagerScript.myGameManagerScript.GetRandomStandardStickmonMove();
         allEncounterStickmonMoves.Add(currentStickmonMove);
 
-        Encounter currentEncounter = new Encounter(encounter.GetStickmonName(), encounterLevel, maxHealth, maxHealth, allEncounterStickmonMoves);
+        Encounter currentEncounter = new Encounter(encounter.GetStickmonName(), encounterLevel, maxHealth, maxHealth, allEncounterStickmonMoves, encounter.GetStickmonImage());
         return currentEncounter;
     }
 
@@ -216,20 +221,21 @@ public class BattleSceneScript : MonoBehaviour
     {
         string encounterName = _currentEncounter.GetEncounterName();
 
-        switch (encounterName)
-        {
-            case "Larry":
-                opponentImage.sprite = larrySprite;
-                break;
+        //switch (encounterName)
+        //{
+        //    case "Larry":
+        //        opponentImage.sprite = larrySprite;
+        //        break;
 
-            case "Paul":
-                opponentImage.sprite = paulSprite;
-                break;
+        //    case "Paul":
+        //        opponentImage.sprite = paulSprite;
+        //        break;
 
-            case "Griffin":
-                opponentImage.sprite = griffinSprite;
-                break;
-        }
+        //    case "Griffin":
+        //        opponentImage.sprite = griffinSprite;
+        //        break;
+        //}
+        opponentImage.sprite = _currentEncounter.GetEncounterImage();
         opponentName.text = encounterName;
         opponentLevel.text = $"Level: {_currentEncounter.GetEncounterLevel()}";
 
@@ -310,6 +316,7 @@ public class BattleSceneScript : MonoBehaviour
             upComingLines.Add($"{_currentEncounter.GetEncounterName()} isn't able to continue fighting");
             opponentImage.enabled = false;
             battleIsOver = true;
+            //ToggleAllButtons("disable");
         }
     }
 
@@ -345,8 +352,7 @@ public class BattleSceneScript : MonoBehaviour
         if (levelIncreased == true)
         {
             LevelUpStickmon(firstStickmon);
-        }
-        //StartCoroutine(GoBack());        
+        }        
     }
 
     private void LevelUpStickmon(CurrentStickmon firstStickmon)
@@ -356,13 +362,7 @@ public class BattleSceneScript : MonoBehaviour
 
         upComingLines.Add($"{firstStickmon.GetStickmonName()} has reached level {firstStickmon.GetStickmonLevel()}");
         upComingLines.Add($"{firstStickmon.GetStickmonName()} has their max health increased to {newHealth}");
-    }
-
-    //IEnumerator GoBack()
-    //{
-    //    yield return new WaitForSeconds(2);
-    //    SceneManager.LoadScene("StartScene");
-    //}
+    }    
 
     private void GoBack()
     {
@@ -435,41 +435,25 @@ public class BattleSceneScript : MonoBehaviour
     {
         //if (status == "enable")
         //{
-        //    Debug.Log(firstMoveButton);
-        //    Debug.Log(secondMoveButton);
-        //    Debug.Log(thirdMoveButton);
+        //    //Debug.Log(firstMoveButton);
+        //    //Debug.Log(secondMoveButton);
+        //    //Debug.Log(thirdMoveButton);            
 
-        //    firstMoveButton.interactable = true;
-        //    secondMoveButton.interactable = true;
-        //    thirdMoveButton.interactable = true;
-
-        //    //firstMoveButton.enabled = true;
-        //    //secondMoveButton.enabled = true;
-        //    //thirdMoveButton.enabled = true;
+        //    firstMoveButton.enabled = true;
+        //    secondMoveButton.enabled = true;
+        //    thirdMoveButton.enabled = true;
         //}
         //else
         //{
-        //    firstMoveButton.interactable = false;
-        //    secondMoveButton.interactable = false;
-        //    thirdMoveButton.interactable = false;
+        //    //firstMoveButton.interactable = false;
+        //    //secondMoveButton.interactable = false;
+        //    //thirdMoveButton.interactable = false;
 
-        //    //firstMoveButton.enabled = false;
-        //    //secondMoveButton.enabled = false;
-        //    //thirdMoveButton.enabled = false;            
+        //    firstMoveButton.enabled = false;
+        //    secondMoveButton.enabled = false;
+        //    thirdMoveButton.enabled = false;
         //}
     }
-
-    //private void ToggleContiueTextButton(string status)
-    //{
-    //    if (status == "enable")
-    //    {
-    //        continueTextButton.enabled = true;            
-    //    }
-    //    else
-    //    {
-    //        continueTextButton.enabled = false;            
-    //    }
-    //}
 
     public void EnableAttacking()
     {
@@ -480,14 +464,15 @@ public class BattleSceneScript : MonoBehaviour
             upComingLines.RemoveAt(0);
         }        
         else if (playerTurn == true && battleIsOver == false)
-        {            
+        {
+            ToggleAllButtons("enable");
             battleSceneText.text = $"Choose a move:";
 
             continueTextButton.enabled = false;
 
             beginOfBattle = false;
             playerCanAttack = true;
-            opponentHasAttacked = false;
+            opponentHasAttacked = false;            
         }
         else if (playerTurn == false && battleIsOver == false)
         {            
@@ -500,7 +485,7 @@ public class BattleSceneScript : MonoBehaviour
         else
         {            
             GoBack();
-        }
+        }        
     }
 
     #endregion

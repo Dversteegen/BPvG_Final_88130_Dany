@@ -119,6 +119,14 @@ public class GameManagerScript : MonoBehaviour
         return myAlliedStickmon;
     }
 
+    public void HealAllAlliedStickmon()
+    {
+        foreach (CurrentStickmon currentStickmon in myAlliedStickmon)
+        {
+            currentStickmon.HealStickmon();
+        }        
+    }
+
     #endregion
 
     //#region Encounter

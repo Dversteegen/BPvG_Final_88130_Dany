@@ -5,6 +5,12 @@ using UnityEngine.SceneManagement;
 
 public class StartScript : MonoBehaviour
 {
+    [Header("Sprites")]
+    [SerializeField] Sprite larrySprite;
+    [SerializeField] Sprite paulSprite;
+    [SerializeField] Sprite griffinSprite;
+    [SerializeField] Sprite julianSprite;    
+
     private void Start()
     {
 
@@ -60,16 +66,16 @@ public class StartScript : MonoBehaviour
 
     private void AddAllStickmons()
     {
-        Stickmon newStickmon = new Stickmon("Larry", 12);
+        Stickmon newStickmon = new Stickmon("Larry", 12, larrySprite);
         GameManagerScript.myGameManagerScript.AddStickmon(newStickmon);
 
-        newStickmon = new Stickmon("Julian", 9);
+        newStickmon = new Stickmon("Julian", 9, julianSprite);
         GameManagerScript.myGameManagerScript.AddStickmon(newStickmon);
 
-        newStickmon = new Stickmon("Griffin", 10);
+        newStickmon = new Stickmon("Griffin", 10, griffinSprite);
         GameManagerScript.myGameManagerScript.AddStickmon(newStickmon);
 
-        newStickmon = new Stickmon("Paul", 8);
+        newStickmon = new Stickmon("Paul", 8, paulSprite);
         GameManagerScript.myGameManagerScript.AddStickmon(newStickmon);
     }
 
@@ -99,7 +105,7 @@ public class StartScript : MonoBehaviour
         randomStickmonMove = GameManagerScript.myGameManagerScript.GetRandomNewStickmonMove(randomStickmonMove);
         allCurrentMoves.Add(randomStickmonMove);
 
-        CurrentStickmon newAlliedStickmon = new CurrentStickmon(firstStickmon.GetStickmonName(), 3, 11, maxHealthPoints, allCurrentMoves);
+        CurrentStickmon newAlliedStickmon = new CurrentStickmon(firstStickmon.GetStickmonName(), 3, 11, maxHealthPoints, allCurrentMoves, julianSprite);
         GameManagerScript.myGameManagerScript.AddFirstStickmon(newAlliedStickmon);
     }
 

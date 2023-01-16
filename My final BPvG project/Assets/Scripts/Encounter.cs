@@ -10,15 +10,18 @@ public class Encounter
     private float _maxHealth;
     private float _currentHealth;
 
+    private Sprite _stickmonImage;
+
     private List<StickmonMove> _allmoves;
 
-    public Encounter(string encounterName, int encounterLevel, float maxHealth, float currentHealth, List<StickmonMove> allEncounterMoves)
+    public Encounter(string encounterName, int encounterLevel, float maxHealth, float currentHealth, List<StickmonMove> allEncounterMoves, Sprite stickmonImage)
     {
         _name = encounterName;
         _level = encounterLevel;
         _maxHealth = maxHealth;
         _currentHealth = currentHealth;
         _allmoves = allEncounterMoves;
+        _stickmonImage = stickmonImage;
     }
 
     #region GetFunctions
@@ -46,6 +49,11 @@ public class Encounter
     public List<StickmonMove>GetEnounterMoves()
     {
         return _allmoves;
+    }
+
+    public Sprite GetEncounterImage()
+    {
+        return _stickmonImage;
     }
 
     #endregion

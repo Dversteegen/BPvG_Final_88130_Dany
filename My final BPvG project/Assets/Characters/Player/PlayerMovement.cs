@@ -1,18 +1,53 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class PlayerMovement : MonoBehaviour
 {
     #region AllVariables
+
+    #region UIElements
+    [Header("Short message")]
+    [SerializeField] Canvas levelOverlayCanvas;
+    [SerializeField] Image levelOverlayPanel;
+    [SerializeField] TextMeshProUGUI shortMessageText;
+
+    [Header("Menu")]    
+    [SerializeField] Image menuPanel;
+    [SerializeField] TextMeshProUGUI menuText;
+    [SerializeField] Image stickmonPanel;
+
+    [Header("First Stickmon")]
+    [SerializeField] Canvas firstStickmonCanvas;
+    [SerializeField] Image firstStickmonImage;
+    [SerializeField] TextMeshProUGUI firstStickmonNameText;
+    [SerializeField] TextMeshProUGUI firstStickmonLevelHealthText;
+
+    [Header("Third Stickmon")]
+    [SerializeField] Canvas secondStickmonCanvas;
+    [SerializeField] Image secondStickmonImage;
+    [SerializeField] TextMeshProUGUI secondStickmonNameText;
+    [SerializeField] TextMeshProUGUI secondStickmonLevelHealthText;
+
+    [Header("Second Stickmon")]
+    [SerializeField] Canvas thirdStickmonCanvas;
+    [SerializeField] Image thirdStickmonImage;
+    [SerializeField] TextMeshProUGUI thirdStickmonNameText;
+    [SerializeField] TextMeshProUGUI thirdStickmonLevelHealthText;    
+
+    #endregion
 
     #region GeneralVariables
 
     Rigidbody2D myBody;
     Animator myAnimator;
     SpriteRenderer mySpriteRenderer;
+
+    private bool menuIsOpen = false;
 
     #endregion
 
@@ -40,6 +75,7 @@ public class PlayerMovement : MonoBehaviour
         myAnimator = GetComponent<Animator>();
         mySpriteRenderer = GetComponent<SpriteRenderer>();
 
+        ToggleOverlay("disable");
         GetCurrentGameState();
     }
 
@@ -75,17 +111,20 @@ public class PlayerMovement : MonoBehaviour
 
     private void Update()
     {
-
+        if (Input.GetKeyDown(KeyCode.Q) == true)
+        {
+            ToggleMenu();
+        }
     }
 
     private void FixedUpdate()
     {
         #region Moving
 
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            FoundEncounter();
-        }
+        //if (Input.GetKeyDown(KeyCode.Space))
+        //{
+        //    StartBattle("Encounter");
+        //}
 
         //Moving
         if (movementInput != Vector2.zero)
@@ -169,7 +208,10 @@ public class PlayerMovement : MonoBehaviour
 
         if (collision.tag == "BattleDetector")
         {
-            FoundEncounter();
+            if (Input.GetKeyDown(KeyCode.E) == true)
+            {
+                StartBattle("SetBattle");
+            }
         }
     }
 
@@ -179,19 +221,141 @@ public class PlayerMovement : MonoBehaviour
 
         if (encounter == 5)
         {
-            FoundEncounter();
+            StartBattle("Encounter");
         }
     }
 
-    private void FoundEncounter()
+    private void StartBattle(string battleType)
     {
         PlayerPrefs.SetFloat("PlayerPositionX", myBody.position.x);
         PlayerPrefs.SetFloat("PlayerPositionY", myBody.position.y);
         PlayerPrefs.SetString("GameState", "BattleScene");
-        PlayerPrefs.Save();
 
+        if (battleType == "Encounter")
+        {
+            PlayerPrefs.SetString("BattleType", "Encounter");
+        }
+        else
+        {
+            PlayerPrefs.SetString("BattleType", "SetBattle");
+        }
+
+        PlayerPrefs.Save();
         SceneManager.LoadScene("BattleScene");
     }
 
+    #endregion
+
+    #region HealingStickmon
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.tag == "Healer")
+        {
+            HealStickmon();
+        }
+    }
+
+    private void HealStickmon()
+    {
+        bool allFullHealth = true;
+
+        List<CurrentStickmon> allAlliedStickmon = GameManagerScript.myGameManagerScript.GetAllAlliedStickmon();
+        foreach (CurrentStickmon currentStickmon in allAlliedStickmon)
+        {
+            if (currentStickmon.GetCurrentHealthPoints() != currentStickmon.GetMaxHealthPoints())
+            {
+                allFullHealth = false;
+            }
+        }
+
+        if (allFullHealth == false)
+        {
+            GameManagerScript.myGameManagerScript.HealAllAlliedStickmon();
+            shortMessageText.text = $"Your Stickmon have been successfully healed!";
+        }
+        else
+        {
+            shortMessageText.text = $"Your Stickmon are already fully healed!";
+        }
+        ToggleOverlay("message");
+        StartCoroutine(HideMessage());
+    }
+
+    #endregion
+
+    #region UIFunctions
+
+    #region ShortMessage
+
+    private void ToggleOverlay(string status)
+    {
+        if (status == "message")
+        {
+            levelOverlayCanvas.enabled = true;
+            levelOverlayPanel.enabled = true;
+            shortMessageText.enabled = true;            
+        }
+        else if (status == "menu") 
+        {
+            levelOverlayCanvas.enabled = true;
+            menuPanel.enabled = true;
+            stickmonPanel.enabled = true;            
+
+            firstStickmonCanvas.enabled = true;
+        }
+        else if (status == "disable")
+        {
+            levelOverlayCanvas.enabled = false;
+            menuPanel.enabled = false;
+            menuText.enabled = false;
+            stickmonPanel.enabled = false;
+
+            firstStickmonCanvas.enabled = false;
+            secondStickmonCanvas.enabled = false;
+            thirdStickmonCanvas.enabled = false;
+
+            levelOverlayPanel.enabled = false;
+            shortMessageText.enabled = false;
+        }
+    }
+
+    IEnumerator HideMessage()
+    {
+        yield return new WaitForSeconds(2);
+        ToggleOverlay("disable");
+    }
+
+    #endregion
+
+    #region ManuPanel
+
+    private void ToggleMenu()
+    {
+        if (menuIsOpen == false)
+        {
+            InputSystem.DisableDevice(Keyboard.current);
+            DefineMenuData();
+            ToggleOverlay("menu");
+            menuIsOpen = true;
+        }
+        else
+        {
+            InputSystem.EnableDevice(Keyboard.current);
+            ToggleOverlay("disable");
+            menuIsOpen = false;
+        }
+    }
+
+    private void DefineMenuData()
+    {
+        CurrentStickmon firstAlliedStickmon = GameManagerScript.myGameManagerScript.GetFirstAlliedStickmon();
+
+        firstStickmonImage.sprite = firstAlliedStickmon.GetStickmonSprite();
+        firstStickmonNameText.text = firstAlliedStickmon.GetStickmonName();
+        firstStickmonLevelHealthText.text = $"Level: {firstAlliedStickmon.GetStickmonLevel()}, {firstAlliedStickmon.GetCurrentHealthPoints()}/{firstAlliedStickmon.GetMaxHealthPoints()}";
+    }
+
+    #endregion
     #endregion
 }

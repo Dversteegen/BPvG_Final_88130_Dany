@@ -14,8 +14,9 @@ public class CurrentStickmon
 
     private List<StickmonMove> _allCurrentMoves;
     private int[] _allLevelBarriers;
+    private Sprite _stickmonSprite;
 
-    public CurrentStickmon(string name, int level, float experiencePoints, float maxHealthPoints, List<StickmonMove> allCurrentMoves)
+    public CurrentStickmon(string name, int level, float experiencePoints, float maxHealthPoints, List<StickmonMove> allCurrentMoves, Sprite stickmonSprite)
     {
         _name = name;
         _level = level;
@@ -24,6 +25,7 @@ public class CurrentStickmon
         _currentHealthPoints = maxHealthPoints;
         _allCurrentMoves = allCurrentMoves;
         _allLevelBarriers = new int[] { 18, 26, 35, 47, 61, 78, 92, 109, 133 };
+        _stickmonSprite = stickmonSprite;
     }
 
     #region GetFunctions
@@ -51,6 +53,11 @@ public class CurrentStickmon
     public float GetCurrentHealthPoints()
     {
         return _currentHealthPoints;
+    }
+
+    public Sprite GetStickmonSprite()
+    {
+        return _stickmonSprite;
     }
 
     #endregion
@@ -95,9 +102,9 @@ public class CurrentStickmon
         return _maxHealthPoints;
     }
 
-    public int GetAmountOfStickmonMoves()
+    public void HealStickmon()
     {
-        return _allCurrentMoves.Count;
+        _currentHealthPoints = _maxHealthPoints;        
     }
 
     public StickmonMove GetStickmonMove(int index)
