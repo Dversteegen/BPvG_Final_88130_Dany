@@ -11,12 +11,13 @@ public class PlayerMovement : MonoBehaviour
     #region AllVariables
 
     #region UIElements
+
     [Header("Short message")]
     [SerializeField] Canvas levelOverlayCanvas;
     [SerializeField] Image levelOverlayPanel;
     [SerializeField] TextMeshProUGUI shortMessageText;
 
-    [Header("Menu")]    
+    [Header("Menu")]
     [SerializeField] Image menuPanel;
     [SerializeField] TextMeshProUGUI menuText;
     [SerializeField] Image stickmonPanel;
@@ -37,7 +38,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] Canvas thirdStickmonCanvas;
     [SerializeField] Image thirdStickmonImage;
     [SerializeField] TextMeshProUGUI thirdStickmonNameText;
-    [SerializeField] TextMeshProUGUI thirdStickmonLevelHealthText;    
+    [SerializeField] TextMeshProUGUI thirdStickmonLevelHealthText;
 
     #endregion
 
@@ -63,8 +64,6 @@ public class PlayerMovement : MonoBehaviour
     #endregion
 
     #endregion
-
-    //GameManagerScript GameManagerScript.myGameManagerScript;
 
     #region StartUp
 
@@ -115,16 +114,16 @@ public class PlayerMovement : MonoBehaviour
         {
             ToggleMenu();
         }
+
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            StartBattle("Encounter");
+        }
     }
 
     private void FixedUpdate()
     {
         #region Moving
-
-        //if (Input.GetKeyDown(KeyCode.Space))
-        //{
-        //    StartBattle("Encounter");
-        //}
 
         //Moving
         if (movementInput != Vector2.zero)
@@ -202,7 +201,7 @@ public class PlayerMovement : MonoBehaviour
         {
             if (isWalking == true)
             {
-                CheckGrass();
+                CheckGrass("firstArea");
             }
         }
 
@@ -215,12 +214,13 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-    private void CheckGrass()
+    private void CheckGrass(string area)
     {
-        float encounter = Random.Range(0, 249);
+        float encounter = Random.Range(0, 250);
 
         if (encounter == 5)
         {
+            PlayerPrefs.SetString("EncounterArea", area);
             StartBattle("Encounter");
         }
     }
@@ -294,15 +294,27 @@ public class PlayerMovement : MonoBehaviour
         {
             levelOverlayCanvas.enabled = true;
             levelOverlayPanel.enabled = true;
-            shortMessageText.enabled = true;            
+            shortMessageText.enabled = true;
         }
-        else if (status == "menu") 
+        else if (status == "menu")
         {
             levelOverlayCanvas.enabled = true;
             menuPanel.enabled = true;
-            stickmonPanel.enabled = true;            
+            stickmonPanel.enabled = true;
 
-            firstStickmonCanvas.enabled = true;
+            int amountOfStickmon = GameManagerScript.myGameManagerScript.GetAllAlliedStickmon().Count;
+            if (amountOfStickmon > 0)
+            {
+                firstStickmonCanvas.enabled = true;
+            }
+            if (amountOfStickmon > 1)
+            {
+                secondStickmonCanvas.enabled = true;
+            }
+            if (amountOfStickmon > 2)
+            {
+                thirdStickmonCanvas.enabled = true;
+            }
         }
         else if (status == "disable")
         {
@@ -349,11 +361,30 @@ public class PlayerMovement : MonoBehaviour
 
     private void DefineMenuData()
     {
-        CurrentStickmon firstAlliedStickmon = GameManagerScript.myGameManagerScript.GetFirstAlliedStickmon();
+        List<CurrentStickmon> allAlliedStickmon = GameManagerScript.myGameManagerScript.GetAllAlliedStickmon();
 
-        firstStickmonImage.sprite = firstAlliedStickmon.GetStickmonSprite();
-        firstStickmonNameText.text = firstAlliedStickmon.GetStickmonName();
-        firstStickmonLevelHealthText.text = $"Level: {firstAlliedStickmon.GetStickmonLevel()}, {firstAlliedStickmon.GetCurrentHealthPoints()}/{firstAlliedStickmon.GetMaxHealthPoints()}";
+        for (int count = 0; count < allAlliedStickmon.Count; count++)
+        {
+            Debug.Log(count);
+            if (count == 0)
+            {
+                firstStickmonImage.sprite = allAlliedStickmon[count].GetStickmonSprite();
+                firstStickmonNameText.text = allAlliedStickmon[count].GetStickmonName();
+                firstStickmonLevelHealthText.text = $"Level: {allAlliedStickmon[count].GetStickmonLevel()}, {allAlliedStickmon[count].GetCurrentHealthPoints()}/{allAlliedStickmon[count].GetMaxHealthPoints()}";
+            }
+            if (count == 1)
+            {
+                secondStickmonImage.sprite = allAlliedStickmon[count].GetStickmonSprite();
+                secondStickmonNameText.text = allAlliedStickmon[count].GetStickmonName();
+                secondStickmonLevelHealthText.text = $"Level: {allAlliedStickmon[count].GetStickmonLevel()}, {allAlliedStickmon[count].GetCurrentHealthPoints()}/{allAlliedStickmon[count].GetMaxHealthPoints()}";
+            }
+            if (count == 2)
+            {
+                thirdStickmonImage.sprite = allAlliedStickmon[count].GetStickmonSprite();
+                thirdStickmonNameText.text = allAlliedStickmon[count].GetStickmonName();
+                thirdStickmonLevelHealthText.text = $"Level: {allAlliedStickmon[count].GetStickmonLevel()}, {allAlliedStickmon[count].GetCurrentHealthPoints()}/{allAlliedStickmon[count].GetMaxHealthPoints()}";
+            }
+        }
     }
 
     #endregion

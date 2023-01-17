@@ -8,15 +8,16 @@ public class CurrentStickmon
     private string _name;
 
     private int _level;
+
     private float _experiencePoints;
     private float _maxHealthPoints;
     private float _currentHealthPoints;
 
     private List<StickmonMove> _allCurrentMoves;
-    private int[] _allLevelBarriers;
     private Sprite _stickmonSprite;
+    private int[] _allLevelBarriers;
 
-    public CurrentStickmon(string name, int level, float experiencePoints, float maxHealthPoints, List<StickmonMove> allCurrentMoves, Sprite stickmonSprite)
+    public CurrentStickmon(string name, int level, float experiencePoints, float maxHealthPoints, List<StickmonMove> allCurrentMoves, Sprite stickmonSprite, int[] allLevelBarriers)
     {
         _name = name;
         _level = level;
@@ -24,8 +25,20 @@ public class CurrentStickmon
         _maxHealthPoints = maxHealthPoints;
         _currentHealthPoints = maxHealthPoints;
         _allCurrentMoves = allCurrentMoves;
-        _allLevelBarriers = new int[] { 18, 26, 35, 47, 61, 78, 92, 109, 133 };
         _stickmonSprite = stickmonSprite;
+        _allLevelBarriers = allLevelBarriers;
+    }
+
+    public CurrentStickmon(Encounter newEncounter, int[] allLevelBarriers, float experiencePoints)
+    {
+        _name = newEncounter.GetEncounterName();
+        _level = newEncounter.GetEncounterLevel();       
+        _experiencePoints = experiencePoints;
+        _maxHealthPoints = newEncounter.GetEncounterMaxHealth();
+        _currentHealthPoints = 0;
+        _allCurrentMoves = newEncounter.GetEnounterMoves();
+        _stickmonSprite = newEncounter.GetEncounterImage();
+        _allLevelBarriers = allLevelBarriers;
     }
 
     #region GetFunctions
@@ -66,13 +79,14 @@ public class CurrentStickmon
 
     public bool DecreaseHealth(float amountOfDamage)
     {
-        if (_currentHealthPoints - amountOfDamage >= 0)
+        if (_currentHealthPoints - amountOfDamage > 0)
         {
             _currentHealthPoints -= amountOfDamage;
             return false;
         }
         else
         {
+            _currentHealthPoints = 0;
             return true;
         }
     }
@@ -84,8 +98,8 @@ public class CurrentStickmon
         _experiencePoints += amountOfNewExperiencePoints;
 
         if (_experiencePoints > _allLevelBarriers[0])
-        {            
-            _allLevelBarriers = _allLevelBarriers.Where(level => level != _allLevelBarriers[0]).ToArray();            
+        {
+            _allLevelBarriers = _allLevelBarriers.Where(level => level != _allLevelBarriers[0]).ToArray();
             _level++;
             return true;
         }
@@ -104,7 +118,7 @@ public class CurrentStickmon
 
     public void HealStickmon()
     {
-        _currentHealthPoints = _maxHealthPoints;        
+        _currentHealthPoints = _maxHealthPoints;
     }
 
     public StickmonMove GetStickmonMove(int index)

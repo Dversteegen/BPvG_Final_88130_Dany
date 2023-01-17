@@ -9,9 +9,7 @@ public class GameManagerScript : MonoBehaviour
 
     private List<StickmonMove> myStickmonMoves;
     private List<Stickmon> myStickmon;
-    private List<CurrentStickmon> myAlliedStickmon;
-
-    //private Encounter _currentEncounter;
+    private List<CurrentStickmon> myAlliedStickmon;    
 
     public GameManagerScript()
     {
@@ -109,6 +107,11 @@ public class GameManagerScript : MonoBehaviour
         myAlliedStickmon.Add(alliedStickmon);
     }
 
+    public void AddAlliedStickmon(CurrentStickmon alliedStickmon)
+    {
+        myAlliedStickmon.Add(alliedStickmon);
+    }
+
     public CurrentStickmon GetFirstAlliedStickmon()
     {
         return myAlliedStickmon[0];
@@ -117,6 +120,32 @@ public class GameManagerScript : MonoBehaviour
     public List<CurrentStickmon> GetAllAlliedStickmon()
     {
         return myAlliedStickmon;
+    }
+
+    public int GetAmountOfHealthyStickmon()
+    {
+        int amountOfHealthyStickmon = 0;
+        foreach (CurrentStickmon currentStickmon in myAlliedStickmon)
+        {
+            if (currentStickmon.GetCurrentHealthPoints() > 0)
+            {
+                amountOfHealthyStickmon++;
+            }
+        }
+        return amountOfHealthyStickmon;
+    }
+
+    public List<CurrentStickmon> GetAllHealthyStickmon()
+    {
+        List<CurrentStickmon> allHealthyStickmon = new List<CurrentStickmon>();
+        foreach (CurrentStickmon currentStickmon in myAlliedStickmon)
+        {
+            if (currentStickmon.GetCurrentHealthPoints() > 0)
+            {
+                allHealthyStickmon.Add(currentStickmon);
+            }
+        }
+        return allHealthyStickmon;
     }
 
     public void HealAllAlliedStickmon()

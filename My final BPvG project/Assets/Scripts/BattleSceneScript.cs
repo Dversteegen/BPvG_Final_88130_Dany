@@ -4,62 +4,89 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using System.Linq;
 
 public class BattleSceneScript : MonoBehaviour
 {
     #region UIElements
 
     [Header("Images")]
+    //Images
     public Image opponentImage;
     public Image playerImage;
 
-
     [Header("TextMesh")]
+    //Names
     [SerializeField] TextMeshProUGUI playerName;
     [SerializeField] TextMeshProUGUI opponentName;
 
+    //Moves
     [SerializeField] TextMeshProUGUI firstMoveText;
     [SerializeField] TextMeshProUGUI secondMoveText;
     [SerializeField] TextMeshProUGUI thirdMoveText;
 
+    //Levels
     [SerializeField] TextMeshProUGUI playerLevel;
     [SerializeField] TextMeshProUGUI opponentLevel;
 
+    //Health
     [SerializeField] TextMeshProUGUI playerHealth;
     [SerializeField] TextMeshProUGUI opponentHealth;
 
+    //Dialogue
     [SerializeField] TextMeshProUGUI battleSceneText;
 
+    //Continue text button text
+    [SerializeField] TextMeshProUGUI continueButtonText;
+
+    //Recruiting
+    [SerializeField] TextMeshProUGUI recruitEncounterButtonText;
 
     [Header("Buttons")]
+    //Moves
     [SerializeField] Button firstMoveButton;
     [SerializeField] Button secondMoveButton;
     [SerializeField] Button thirdMoveButton;
 
+    //Continue text button
     [SerializeField] Button continueTextButton;
 
-    #endregion
-
-    #region Sprites
-    
+    //Recruit
+    [SerializeField] Button recruitEncounterButton;
 
     #endregion
 
+    //Colors
+    private Color basicButtonColor = new Color(64, 64, 64, 1);
+    private Color basicButtonTransparentColor = new Color(64, 64, 64, 0);
+
+    //CurrentEncounter
     private Encounter _currentEncounter;
 
-    private bool beginOfBattle = true;
+    //Booleans
     private bool playerCanAttack = false;
-    private bool opponentHasAttacked = false;
     private bool battleIsOver = false;
     private bool experiencePointsCalculated = false;
     private bool playerTurn = false;
+    private bool optionToRecruit = false;
+    private bool currentStickmonDied = false;
+    private bool outOfStickmon = false;
+
+    private int indexOfAlliedStickmon = 0;
+
+    private bool beginOfBattle = true;
+    private bool opponentHasAttacked = false;
+
+    private int[] allLevelBarriers = new int[] { 5, 11, 18, 26, 35, 47, 61, 78, 98, 123, 153 };
 
     List<string> upComingLines = new List<string>();
     List<Encounter> allCurrentEncounters = new List<Encounter>();
 
     //private void Start()
     void Start()
-    {        
+    {
+        ToggleRecruitElements("disable");
+
         SetUpPlayer();
 
         if (PlayerPrefs.GetString("BattleType") == "Encounter")
@@ -70,16 +97,16 @@ public class BattleSceneScript : MonoBehaviour
         {
             allCurrentEncounters = new List<Encounter>();
         }
-        
+
         SetUpOpponent();
         SetUpText();
-    }    
+    }
 
     #region SetUpBattleScene
 
     private void SetUpPlayer()
     {
-        CurrentStickmon firstStickmon = GameManagerScript.myGameManagerScript.GetFirstAlliedStickmon();
+        CurrentStickmon firstStickmon = GameManagerScript.myGameManagerScript.GetAllAlliedStickmon()[indexOfAlliedStickmon];
         SetUpPlayerStickmon(firstStickmon);
     }
 
@@ -87,12 +114,6 @@ public class BattleSceneScript : MonoBehaviour
 
     private void SetUpPlayerStickmon(CurrentStickmon firstStickmon)
     {
-        //switch (firstStickmon.GetStickmonName())
-        //{
-        //    case "Julian":
-        //        playerImage.sprite = julianSprite;
-        //        break;
-        //}
         playerImage.sprite = firstStickmon.GetStickmonSprite();
         playerName.text = firstStickmon.GetStickmonName();
 
@@ -221,20 +242,6 @@ public class BattleSceneScript : MonoBehaviour
     {
         string encounterName = _currentEncounter.GetEncounterName();
 
-        //switch (encounterName)
-        //{
-        //    case "Larry":
-        //        opponentImage.sprite = larrySprite;
-        //        break;
-
-        //    case "Paul":
-        //        opponentImage.sprite = paulSprite;
-        //        break;
-
-        //    case "Griffin":
-        //        opponentImage.sprite = griffinSprite;
-        //        break;
-        //}
         opponentImage.sprite = _currentEncounter.GetEncounterImage();
         opponentName.text = encounterName;
         opponentLevel.text = $"Level: {_currentEncounter.GetEncounterLevel()}";
@@ -255,7 +262,6 @@ public class BattleSceneScript : MonoBehaviour
     private void DefineFirstAttacker()
     {
         int randomNumber = Random.Range(0, 2);
-        Debug.Log(randomNumber);
         if (randomNumber == 0)
         {
             playerTurn = true;
@@ -296,7 +302,7 @@ public class BattleSceneScript : MonoBehaviour
             }
 
             battleSceneText.text = $"{GameManagerScript.myGameManagerScript.GetFirstStickmon().GetStickmonName()} used {moveName} and dealt {amountOfDamage} damage";
-            continueTextButton.enabled = true;
+            ToggleContinueTextElements("enable");
             DamageEncounter(amountOfDamage);
         }
     }
@@ -316,7 +322,6 @@ public class BattleSceneScript : MonoBehaviour
             upComingLines.Add($"{_currentEncounter.GetEncounterName()} isn't able to continue fighting");
             opponentImage.enabled = false;
             battleIsOver = true;
-            //ToggleAllButtons("disable");
         }
     }
 
@@ -326,7 +331,7 @@ public class BattleSceneScript : MonoBehaviour
 
     private void CalculateExperiencePoints()
     {
-        CurrentStickmon firstStickmon = GameManagerScript.myGameManagerScript.GetFirstAlliedStickmon();
+        CurrentStickmon firstStickmon = GameManagerScript.myGameManagerScript.GetAllAlliedStickmon()[indexOfAlliedStickmon];
         int levelDifference = _currentEncounter.GetEncounterLevel() - firstStickmon.GetStickmonLevel();
         float multiplier = 1;
 
@@ -352,17 +357,18 @@ public class BattleSceneScript : MonoBehaviour
         if (levelIncreased == true)
         {
             LevelUpStickmon(firstStickmon);
-        }        
+        }
+        DefineRecruitment();
     }
 
     private void LevelUpStickmon(CurrentStickmon firstStickmon)
     {
-        float extraHealth = Random.Range(1, 3);
+        float extraHealth = Random.Range(1, 4);
         float newHealth = firstStickmon.IncreaseMaxHealth(extraHealth);
 
         upComingLines.Add($"{firstStickmon.GetStickmonName()} has reached level {firstStickmon.GetStickmonLevel()}");
         upComingLines.Add($"{firstStickmon.GetStickmonName()} has their max health increased to {newHealth}");
-    }    
+    }
 
     private void GoBack()
     {
@@ -379,7 +385,7 @@ public class BattleSceneScript : MonoBehaviour
 
     private void OpponentAttack()
     {
-        CurrentStickmon firstStickmon = GameManagerScript.myGameManagerScript.GetFirstAlliedStickmon();
+        CurrentStickmon firstStickmon = GameManagerScript.myGameManagerScript.GetAllAlliedStickmon()[0];
 
         List<StickmonMove> allStickmonMoves = _currentEncounter.GetEnounterMoves();
         string opponentMove = "";
@@ -400,17 +406,78 @@ public class BattleSceneScript : MonoBehaviour
         }
 
         bool stickmonHasDied = firstStickmon.DecreaseHealth(moveDamage);
+        battleSceneText.text = $"{_currentEncounter.GetEncounterName()} has used {opponentMove} and dealt {moveDamage} damage";
 
         if (stickmonHasDied == false)
         {
-            battleSceneText.text = $"{_currentEncounter.GetEncounterName()} has used {opponentMove} and dealt {moveDamage} damage";
             playerHealth.text = $"Health: {firstStickmon.GetCurrentHealthPoints()}/{firstStickmon.GetMaxHealthPoints()}";
+        }
+        else
+        {
+            playerHealth.text = $"Health: 0/{firstStickmon.GetMaxHealthPoints()}";
+            playerImage.enabled = false;
+            upComingLines.Add($"{firstStickmon.GetStickmonName()} isn't able to continue fighting");
+            currentStickmonDied = true;
         }
         opponentHasAttacked = true;
         playerTurn = true;
     }
 
+    private void CheckSquad()
+    {
+        if (GameManagerScript.myGameManagerScript.GetAmountOfHealthyStickmon() == 0)
+        {
+            battleSceneText.text = $"You have run out of available Stickmon";
+            battleIsOver = true;
+            outOfStickmon = true;
+        }
+        else
+        {
+            indexOfAlliedStickmon++;
+            SetUpPlayer();
+        }
+    }
+
     #endregion
+
+    #endregion
+
+    #region Recruiting
+
+    private void DefineRecruitment()
+    {
+        if (GameManagerScript.myGameManagerScript.GetAllAlliedStickmon().Count < 3)
+        {
+            int randomNumber = 2;
+            if (randomNumber == 2)
+            {
+                optionToRecruit = true;
+                upComingLines.Add($"{_currentEncounter.GetEncounterName()} wishes to join you, do you accept?");
+            }
+        }
+    }
+
+    public void RecruitEncounter()
+    {
+        int level = _currentEncounter.GetEncounterLevel();
+        float currentAmountOfExperiencePoints = 0;
+        for (int count = 0; count < level - 1; count++)
+        {
+            currentAmountOfExperiencePoints = allLevelBarriers[0];
+            allLevelBarriers = allLevelBarriers.Where(levelBarrier => levelBarrier != allLevelBarriers[0]).ToArray();
+        }
+
+        CurrentStickmon newAlliedStickmon = new CurrentStickmon(_currentEncounter, allLevelBarriers, currentAmountOfExperiencePoints);
+        GameManagerScript.myGameManagerScript.AddAlliedStickmon(newAlliedStickmon);
+        upComingLines.Add($"{newAlliedStickmon.GetStickmonName()} has joined your squad, good luck!");
+
+        optionToRecruit = false;
+
+        ToggleRecruitElements("disable");
+        ToggleContinueTextElements("enable");
+
+        EnableAttacking();
+    }
 
     #endregion
 
@@ -424,12 +491,14 @@ public class BattleSceneScript : MonoBehaviour
 
     private CurrentStickmon GetFirstStickmon()
     {
-        return GameManagerScript.myGameManagerScript.GetFirstAlliedStickmon();
+        return GameManagerScript.myGameManagerScript.GetAllAlliedStickmon()[indexOfAlliedStickmon];
     }
 
     #endregion
 
     #region GeneralSceneFunctions
+
+    #region ToggleFunctions
 
     public void ToggleAllButtons(string status)
     {
@@ -455,37 +524,80 @@ public class BattleSceneScript : MonoBehaviour
         //}
     }
 
+    private void ToggleRecruitElements(string status)
+    {
+        if (status == "disable")
+        {
+            recruitEncounterButton.image.color = basicButtonTransparentColor;
+            recruitEncounterButtonText.text = "";
+            recruitEncounterButton.enabled = false;
+        }
+        else
+        {
+            recruitEncounterButton.image.color = basicButtonColor;
+            recruitEncounterButtonText.text = "Recruit";
+            recruitEncounterButton.enabled = true;
+        }
+    }
+
+    private void ToggleContinueTextElements(string status)
+    {
+        if (status == "disable")
+        {
+            continueTextButton.enabled = false;
+            continueTextButton.image.color = basicButtonTransparentColor;
+            continueButtonText.text = "";
+        }
+        else
+        {
+            continueTextButton.enabled = true;
+            continueTextButton.image.color = basicButtonColor;
+            continueButtonText.text = "Continue";
+        }
+    }
+
+    #endregion
+
     public void EnableAttacking()
     {
-        continueTextButton.enabled = true;
         if (upComingLines.Count > 0)
-        {            
+        {
             battleSceneText.text = upComingLines[0];
             upComingLines.RemoveAt(0);
-        }        
-        else if (playerTurn == true && battleIsOver == false)
+        }
+        else if (playerTurn == true && battleIsOver == false && currentStickmonDied == false)
         {
-            ToggleAllButtons("enable");
-            battleSceneText.text = $"Choose a move:";
+            ToggleContinueTextElements("disable");
 
-            continueTextButton.enabled = false;
+            battleSceneText.text = $"Choose a move:";
 
             beginOfBattle = false;
             playerCanAttack = true;
-            opponentHasAttacked = false;            
+            opponentHasAttacked = false;
         }
-        else if (playerTurn == false && battleIsOver == false)
-        {            
+        else if (playerTurn == false && battleIsOver == false && currentStickmonDied == false)
+        {
             OpponentAttack();
+            ToggleContinueTextElements("enable");
         }
-        else if (battleIsOver == true && experiencePointsCalculated == false)
-        {            
+        else if (currentStickmonDied == true)
+        {
+            CheckSquad();
+        }
+        else if (battleIsOver == true && experiencePointsCalculated == false && outOfStickmon == false)
+        {
             CalculateExperiencePoints();
+            ToggleContinueTextElements("enable");
+        }
+        else if (optionToRecruit == true)
+        {
+            ToggleRecruitElements("enable");
+            ToggleContinueTextElements("disable");
         }
         else
-        {            
+        {
             GoBack();
-        }        
+        }
     }
 
     #endregion

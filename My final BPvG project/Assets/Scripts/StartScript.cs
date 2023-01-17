@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using System.Linq;
 
 public class StartScript : MonoBehaviour
 {
@@ -9,7 +10,7 @@ public class StartScript : MonoBehaviour
     [SerializeField] Sprite larrySprite;
     [SerializeField] Sprite paulSprite;
     [SerializeField] Sprite griffinSprite;
-    [SerializeField] Sprite julianSprite;    
+    [SerializeField] Sprite julianSprite;
 
     private void Start()
     {
@@ -101,11 +102,19 @@ public class StartScript : MonoBehaviour
         StickmonMove randomStickmonMove = GameManagerScript.myGameManagerScript.GetRandomStandardStickmonMove();
         List<StickmonMove> allCurrentMoves = new List<StickmonMove>();
         allCurrentMoves.Add(randomStickmonMove);
-
         randomStickmonMove = GameManagerScript.myGameManagerScript.GetRandomNewStickmonMove(randomStickmonMove);
         allCurrentMoves.Add(randomStickmonMove);
 
-        CurrentStickmon newAlliedStickmon = new CurrentStickmon(firstStickmon.GetStickmonName(), 3, 11, maxHealthPoints, allCurrentMoves, julianSprite);
+        int[] allLevelBarriers = new int[] { 5, 11, 18, 26, 35, 47, 61, 78, 98, 123, 153 };
+        int level = 3;        
+
+        for(int count = 0; count < level - 1; count++)
+        {
+            allLevelBarriers = allLevelBarriers.Where(levelBarrier => levelBarrier != allLevelBarriers[0]).ToArray();
+        }
+
+        //CurrentStickmon newAlliedStickmon = new CurrentStickmon(firstStickmon.GetStickmonName(), 3, 11, maxHealthPoints, allCurrentMoves, julianSprite, allLevelBarriers);
+        CurrentStickmon newAlliedStickmon = new CurrentStickmon(firstStickmon.GetStickmonName(), 3, 11, 1, allCurrentMoves, julianSprite, allLevelBarriers);
         GameManagerScript.myGameManagerScript.AddFirstStickmon(newAlliedStickmon);
     }
 
