@@ -113,8 +113,8 @@ public class StartScript : MonoBehaviour
             allLevelBarriers = allLevelBarriers.Where(levelBarrier => levelBarrier != allLevelBarriers[0]).ToArray();
         }
 
-        //CurrentStickmon newAlliedStickmon = new CurrentStickmon(firstStickmon.GetStickmonName(), 3, 11, maxHealthPoints, allCurrentMoves, julianSprite, allLevelBarriers);
-        CurrentStickmon newAlliedStickmon = new CurrentStickmon(firstStickmon.GetStickmonName(), 3, 11, 1, allCurrentMoves, julianSprite, allLevelBarriers);
+        CurrentStickmon newAlliedStickmon = new CurrentStickmon(firstStickmon.GetStickmonName(), 3, 11, maxHealthPoints, allCurrentMoves, julianSprite, allLevelBarriers);
+        //CurrentStickmon newAlliedStickmon = new CurrentStickmon(firstStickmon.GetStickmonName(), 3, 11, 1, allCurrentMoves, julianSprite, allLevelBarriers);
         GameManagerScript.myGameManagerScript.AddFirstStickmon(newAlliedStickmon);
     }
 

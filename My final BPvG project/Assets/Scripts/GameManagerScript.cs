@@ -102,6 +102,8 @@ public class GameManagerScript : MonoBehaviour
 
     #region AlliedStickmon
 
+    #region AddAlliedStickmon
+
     public void AddFirstStickmon(CurrentStickmon alliedStickmon)
     {
         myAlliedStickmon.Add(alliedStickmon);
@@ -112,16 +114,44 @@ public class GameManagerScript : MonoBehaviour
         myAlliedStickmon.Add(alliedStickmon);
     }
 
+    #endregion
+
+    #region GetFunctions
+
     public CurrentStickmon GetFirstAlliedStickmon()
     {
         return myAlliedStickmon[0];
     }
 
+    /// <summary>
+    /// Returns the first healthy Stickmon
+    /// </summary>
+    /// <returns></returns>
+    public CurrentStickmon GetFirstHealthyAllliedStickmon()
+    {
+        foreach (CurrentStickmon alliedStickmon in myAlliedStickmon)
+        {
+            if (alliedStickmon.GetCurrentHealthPoints() > 0)
+            {
+                return alliedStickmon;
+            }
+        }
+        return null;
+    }
+
+    /// <summary>
+    /// Returns all allied Stickmon
+    /// </summary>
+    /// <returns></returns>
     public List<CurrentStickmon> GetAllAlliedStickmon()
     {
         return myAlliedStickmon;
     }
 
+    /// <summary>
+    /// Returns the amount of healthy Stickmon
+    /// </summary>
+    /// <returns></returns>
     public int GetAmountOfHealthyStickmon()
     {
         int amountOfHealthyStickmon = 0;
@@ -135,18 +165,9 @@ public class GameManagerScript : MonoBehaviour
         return amountOfHealthyStickmon;
     }
 
-    public List<CurrentStickmon> GetAllHealthyStickmon()
-    {
-        List<CurrentStickmon> allHealthyStickmon = new List<CurrentStickmon>();
-        foreach (CurrentStickmon currentStickmon in myAlliedStickmon)
-        {
-            if (currentStickmon.GetCurrentHealthPoints() > 0)
-            {
-                allHealthyStickmon.Add(currentStickmon);
-            }
-        }
-        return allHealthyStickmon;
-    }
+    #endregion
+
+    #region Methods
 
     public void HealAllAlliedStickmon()
     {
@@ -156,19 +177,21 @@ public class GameManagerScript : MonoBehaviour
         }        
     }
 
+    public void SwapStickmonPositions(CurrentStickmon currentFirstStickmon, string position)
+    {
+        if (position == "second")
+        {
+            myAlliedStickmon[0] = myAlliedStickmon[1];
+            myAlliedStickmon[1] = currentFirstStickmon;
+        }
+        else
+        {
+            myAlliedStickmon[0] = myAlliedStickmon[2];
+            myAlliedStickmon[2] = currentFirstStickmon;
+        }        
+    }
+
     #endregion
 
-    //#region Encounter
-
-    //public void DefineCurrentEncounter(Encounter currentEncounter)
-    //{
-    //    _currentEncounter = currentEncounter;
-    //}
-
-    ////public bool SubtractDamage(float amountOfDamage)
-    ////{
-
-    ////} 
-
-    //#endregion
+    #endregion
 }

@@ -25,20 +25,37 @@ public class PlayerMovement : MonoBehaviour
     [Header("First Stickmon")]
     [SerializeField] Canvas firstStickmonCanvas;
     [SerializeField] Image firstStickmonImage;
+
     [SerializeField] TextMeshProUGUI firstStickmonNameText;
     [SerializeField] TextMeshProUGUI firstStickmonLevelHealthText;
 
-    [Header("Third Stickmon")]
+    [SerializeField] TextMeshProUGUI firstStickmonFirstMoveText;
+    [SerializeField] TextMeshProUGUI firstStickmonSecondMoveText;
+    [SerializeField] TextMeshProUGUI firstStickmonThirdMoveText;
+
+    [Header("Second Stickmon")]
     [SerializeField] Canvas secondStickmonCanvas;
     [SerializeField] Image secondStickmonImage;
+    [SerializeField] Button assignSecondStickMonFirstButton;
+
     [SerializeField] TextMeshProUGUI secondStickmonNameText;
     [SerializeField] TextMeshProUGUI secondStickmonLevelHealthText;
 
-    [Header("Second Stickmon")]
+    [SerializeField] TextMeshProUGUI secondStickmonFirstMoveText;
+    [SerializeField] TextMeshProUGUI secondStickmonSecondMoveText;
+    [SerializeField] TextMeshProUGUI secondStickmonThirdMoveText;
+
+    [Header("Third Stickmon")]
     [SerializeField] Canvas thirdStickmonCanvas;
     [SerializeField] Image thirdStickmonImage;
+    [SerializeField] Button assignThirdStickMonFirstButton;
+
     [SerializeField] TextMeshProUGUI thirdStickmonNameText;
     [SerializeField] TextMeshProUGUI thirdStickmonLevelHealthText;
+
+    [SerializeField] TextMeshProUGUI thirdStickmonFirstMoveText;
+    [SerializeField] TextMeshProUGUI thirdStickmonSecondMoveText;
+    [SerializeField] TextMeshProUGUI thirdStickmonThirdMoveText;
 
     #endregion
 
@@ -197,8 +214,18 @@ public class PlayerMovement : MonoBehaviour
 
     private void OnTriggerStay2D(Collider2D collision)
     {
-        if (collision.tag == "Grass")
+        if (collision.tag == "FirstGrass")
         {
+            PlayerPrefs.SetInt("MaxLevel", 5);
+            if (isWalking == true)
+            {
+                CheckGrass("firstArea");
+            }
+        }
+
+        if (collision.tag == "SecondGrass")
+        {
+            PlayerPrefs.SetInt("MaxLevel", 15);
             if (isWalking == true)
             {
                 CheckGrass("firstArea");
@@ -216,7 +243,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void CheckGrass(string area)
     {
-        float encounter = Random.Range(0, 250);
+        float encounter = Random.Range(0, 150);
 
         if (encounter == 5)
         {
@@ -288,6 +315,83 @@ public class PlayerMovement : MonoBehaviour
 
     #region ShortMessage
 
+    IEnumerator HideMessage()
+    {
+        yield return new WaitForSeconds(2);
+        ToggleOverlay("disable");
+    }
+
+    #endregion
+
+    #region ManuPanel
+
+    private void DefineMenuData()
+    {
+        List<CurrentStickmon> allAlliedStickmon = GameManagerScript.myGameManagerScript.GetAllAlliedStickmon();
+
+        for (int count = 0; count < allAlliedStickmon.Count; count++)
+        {
+            CurrentStickmon currentAlliedStickmon = allAlliedStickmon[count];
+
+            if (count == 0)
+            {
+                firstStickmonImage.sprite = currentAlliedStickmon.GetStickmonSprite();
+                firstStickmonNameText.text = currentAlliedStickmon.GetStickmonName();
+                firstStickmonLevelHealthText.text = $"Level: {currentAlliedStickmon.GetStickmonLevel()}, {currentAlliedStickmon.GetCurrentHealthPoints()}/{currentAlliedStickmon.GetMaxHealthPoints()}";
+
+                int amountOfMoves = currentAlliedStickmon.GetAllStickmonMoves().Count;
+
+                firstStickmonFirstMoveText.text = currentAlliedStickmon.GetStickmonMove(0).GetMoveName();
+                if (amountOfMoves > 1)
+                {
+                    firstStickmonSecondMoveText.text = currentAlliedStickmon.GetStickmonMove(1).GetMoveName();
+                }
+                if (amountOfMoves > 2)
+                {
+                    firstStickmonThirdMoveText.text = currentAlliedStickmon.GetStickmonMove(2).GetMoveName();
+                }
+            }
+            if (count == 1)
+            {
+                secondStickmonImage.sprite = currentAlliedStickmon.GetStickmonSprite();
+                secondStickmonNameText.text = currentAlliedStickmon.GetStickmonName();
+                secondStickmonLevelHealthText.text = $"Level: {currentAlliedStickmon.GetStickmonLevel()}, {currentAlliedStickmon.GetCurrentHealthPoints()}/{currentAlliedStickmon.GetMaxHealthPoints()}";
+
+                int amountOfMoves = currentAlliedStickmon.GetAllStickmonMoves().Count;
+                secondStickmonFirstMoveText.text = currentAlliedStickmon.GetStickmonMove(0).GetMoveName();
+                if (amountOfMoves > 1)
+                {
+                    secondStickmonSecondMoveText.text = currentAlliedStickmon.GetStickmonMove(1).GetMoveName();
+                }
+                if (amountOfMoves > 2)
+                {
+                    secondStickmonThirdMoveText.text = currentAlliedStickmon.GetStickmonMove(2).GetMoveName();
+                }
+            }
+            if (count == 2)
+            {
+                thirdStickmonImage.sprite = currentAlliedStickmon.GetStickmonSprite();
+                thirdStickmonNameText.text = currentAlliedStickmon.GetStickmonName();
+                thirdStickmonLevelHealthText.text = $"Level: {currentAlliedStickmon.GetStickmonLevel()}, {currentAlliedStickmon.GetCurrentHealthPoints()}/{currentAlliedStickmon.GetMaxHealthPoints()}";
+
+                int amountOfMoves = currentAlliedStickmon.GetAllStickmonMoves().Count;
+                thirdStickmonFirstMoveText.text = currentAlliedStickmon.GetStickmonMove(0).GetMoveName();
+                if (amountOfMoves > 1)
+                {
+                    thirdStickmonSecondMoveText.text = currentAlliedStickmon.GetStickmonMove(1).GetMoveName();
+                }
+                if (amountOfMoves > 2)
+                {
+                    thirdStickmonThirdMoveText.text = currentAlliedStickmon.GetStickmonMove(2).GetMoveName();
+                }
+            }
+        }
+    }
+
+    #endregion
+
+    #region ToggleFunctions
+
     private void ToggleOverlay(string status)
     {
         if (status == "message")
@@ -332,16 +436,6 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-    IEnumerator HideMessage()
-    {
-        yield return new WaitForSeconds(2);
-        ToggleOverlay("disable");
-    }
-
-    #endregion
-
-    #region ManuPanel
-
     private void ToggleMenu()
     {
         if (menuIsOpen == false)
@@ -359,34 +453,18 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-    private void DefineMenuData()
-    {
-        List<CurrentStickmon> allAlliedStickmon = GameManagerScript.myGameManagerScript.GetAllAlliedStickmon();
+    #endregion
 
-        for (int count = 0; count < allAlliedStickmon.Count; count++)
-        {
-            Debug.Log(count);
-            if (count == 0)
-            {
-                firstStickmonImage.sprite = allAlliedStickmon[count].GetStickmonSprite();
-                firstStickmonNameText.text = allAlliedStickmon[count].GetStickmonName();
-                firstStickmonLevelHealthText.text = $"Level: {allAlliedStickmon[count].GetStickmonLevel()}, {allAlliedStickmon[count].GetCurrentHealthPoints()}/{allAlliedStickmon[count].GetMaxHealthPoints()}";
-            }
-            if (count == 1)
-            {
-                secondStickmonImage.sprite = allAlliedStickmon[count].GetStickmonSprite();
-                secondStickmonNameText.text = allAlliedStickmon[count].GetStickmonName();
-                secondStickmonLevelHealthText.text = $"Level: {allAlliedStickmon[count].GetStickmonLevel()}, {allAlliedStickmon[count].GetCurrentHealthPoints()}/{allAlliedStickmon[count].GetMaxHealthPoints()}";
-            }
-            if (count == 2)
-            {
-                thirdStickmonImage.sprite = allAlliedStickmon[count].GetStickmonSprite();
-                thirdStickmonNameText.text = allAlliedStickmon[count].GetStickmonName();
-                thirdStickmonLevelHealthText.text = $"Level: {allAlliedStickmon[count].GetStickmonLevel()}, {allAlliedStickmon[count].GetCurrentHealthPoints()}/{allAlliedStickmon[count].GetMaxHealthPoints()}";
-            }
-        }
+    #region ChangeStickmonPositions
+
+    public void AssignAsFirstStickmon(string position)
+    {
+        CurrentStickmon currentFirstStickmon = GameManagerScript.myGameManagerScript.GetFirstAlliedStickmon();
+        GameManagerScript.myGameManagerScript.SwapStickmonPositions(currentFirstStickmon, position);
+        ToggleMenu();
     }
 
     #endregion
+
     #endregion
 }

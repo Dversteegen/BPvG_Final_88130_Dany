@@ -73,6 +73,16 @@ public class CurrentStickmon
         return _stickmonSprite;
     }
 
+    public StickmonMove GetStickmonMove(int index)
+    {
+        return _allCurrentMoves[index];
+    }
+
+    public List<StickmonMove> GetAllStickmonMoves()
+    {
+        return _allCurrentMoves;
+    }
+
     #endregion
 
     #region DuringBattle
@@ -92,6 +102,8 @@ public class CurrentStickmon
     }
 
     #endregion
+
+    #region AfterBattle
 
     public bool AddExperiencePoints(float amountOfNewExperiencePoints)
     {
@@ -116,19 +128,15 @@ public class CurrentStickmon
         return _maxHealthPoints;
     }
 
+    #endregion
+
+    #region Healing
+
     public void HealStickmon()
     {
         _currentHealthPoints = _maxHealthPoints;
     }
 
-    public StickmonMove GetStickmonMove(int index)
-    {
-        return _allCurrentMoves[index];
-    }
-
-    public List<StickmonMove> GetAllStickmonMoves()
-    {
-        return _allCurrentMoves;
-    }
-
+    #endregion
+    
 }
