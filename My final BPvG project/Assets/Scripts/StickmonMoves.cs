@@ -4,15 +4,12 @@ using UnityEngine;
 
 public class StickmonMove
 {
-    private string _moveName;
-    //private string type;
+    private string _moveName;    
     private int _damage;
-
-    //public StickmonMove(string moveName, string type, int damage)
+    
     public StickmonMove(string moveName, int damage)
     {
-        _moveName = moveName;
-        //this.type = type;
+        _moveName = moveName;        
         _damage = damage;
     }
 

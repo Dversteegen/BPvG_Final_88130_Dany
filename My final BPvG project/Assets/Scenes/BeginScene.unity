@@ -354,10 +354,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4841f6c904ab6324e98c499473a0a942, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ContinueGameButton: {fileID: 103031520}
+  ContinueGameButtonText: {fileID: 1787751724}
+  julianSprite: {fileID: 21300000, guid: b3850a47b8df11a48ba5fa173feba2e0, type: 3}
   larrySprite: {fileID: 21300000, guid: 5108406f961fc7a41aca241d824fc6c8, type: 3}
   paulSprite: {fileID: 21300000, guid: 9d736a47abc081d4387e59559fd605e7, type: 3}
   griffinSprite: {fileID: 21300000, guid: 042f4d35ddae2d541bcda9c0c02c3ef9, type: 3}
-  julianSprite: {fileID: 21300000, guid: b3850a47b8df11a48ba5fa173feba2e0, type: 3}
+  emilySprite: {fileID: 21300000, guid: 336252bad609703459af2ab89fb987bf, type: 3}
+  bellaSprite: {fileID: 21300000, guid: bd3df1eb0e9a2d045b6dff5d2868e0a2, type: 3}
+  julianBackSprite: {fileID: 21300000, guid: eacbe9e2bc46dfb4594ccbc87877086a, type: 3}
+  larryBackSprite: {fileID: 21300000, guid: bc96ae95cc7f8b7458c32ea819fbb6e4, type: 3}
+  paulBackSprite: {fileID: 21300000, guid: d59de41341c57ac498254df63353a057, type: 3}
+  griffinBackSprite: {fileID: 21300000, guid: 6fc540d96fb8c514bb54e1d81bfac464, type: 3}
+  emilyBackSprite: {fileID: 21300000, guid: 12a4f387453dfcc4bb6bfbca59fdddd3, type: 3}
+  bellaBackSprite: {fileID: 21300000, guid: 75c3839b1c42f404b81cf8881cf87ae0, type: 3}
 --- !u!4 &637330580
 Transform:
   m_ObjectHideFlags: 0

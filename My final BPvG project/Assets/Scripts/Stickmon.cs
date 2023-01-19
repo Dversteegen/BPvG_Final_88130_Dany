@@ -7,14 +7,14 @@ public class Stickmon
     private string _name;
     private float _baseHealthPoints;
     private Sprite _stickmonImage;
-    //private List<StickmonMove> allPossibleMoves;
-    //private Texture2D _stickmonSprite;
-    
-    public Stickmon(string name, float baseHealthPoints, Sprite stickmonImage)
+    private Sprite _stickmonBackImage;    
+
+    public Stickmon(string name, float baseHealthPoints, Sprite stickmonImage, Sprite stickmonBackImage)
     {
         _name = name;
         _baseHealthPoints = baseHealthPoints;
         _stickmonImage = stickmonImage;
+        _stickmonBackImage = stickmonBackImage;
     }
 
     public string GetStickmonName()
@@ -27,8 +27,20 @@ public class Stickmon
         return _baseHealthPoints;
     }
 
-    public Sprite GetStickmonImage()
+    /// <summary>
+    /// Returns either the normal sprite or the back sprite depending on the string
+    /// </summary>
+    /// <param name="type"></param>
+    /// <returns></returns>
+    public Sprite GetStickmonImage(string type)
     {
-        return _stickmonImage;
+        if (type == "normal")
+        {
+            return _stickmonImage;
+        }
+        else
+        {
+            return _stickmonBackImage;
+        }        
     }
 }

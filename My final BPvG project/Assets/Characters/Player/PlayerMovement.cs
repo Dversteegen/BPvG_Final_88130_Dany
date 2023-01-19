@@ -8,8 +8,6 @@ using UnityEngine.UI;
 
 public class PlayerMovement : MonoBehaviour
 {
-    #region AllVariables
-
     #region UIElements
 
     [Header("Short message")]
@@ -59,12 +57,15 @@ public class PlayerMovement : MonoBehaviour
 
     #endregion
 
+    #region AllVariables
+
     #region GeneralVariables
 
     Rigidbody2D myBody;
     Animator myAnimator;
     SpriteRenderer mySpriteRenderer;
 
+    //For toggling the menu
     private bool menuIsOpen = false;
 
     #endregion
@@ -73,9 +74,17 @@ public class PlayerMovement : MonoBehaviour
 
     public float moveSpeed = 1f;
     public float collisionOffset = 0.05f;
-    private bool isWalking;
+
+    //Keeps track wether the player is moving or not
+    private bool isWalking = false;
+
+    //
     public ContactFilter2D movementFilter;
+
+    //The direction the player wants to move into
     Vector2 movementInput;
+
+    //Prevents the walking animation from playing when walking against a collider
     List<RaycastHit2D> castCollisions = new List<RaycastHit2D>();
 
     #endregion
@@ -93,6 +102,7 @@ public class PlayerMovement : MonoBehaviour
 
         ToggleOverlay("disable");
         GetCurrentGameState();
+        SaveProgress();
     }
 
     /// <summary>
@@ -100,11 +110,12 @@ public class PlayerMovement : MonoBehaviour
     /// </summary>
     private void GetCurrentGameState()
     {
-        if (PlayerPrefs.GetString("GameState") == "BattleScene")
+        if (PlayerPrefs.HasKey("GameState"))
         {
             float positionX = PlayerPrefs.GetFloat("PlayerPositionX");
             float positionY = PlayerPrefs.GetFloat("PlayerPositionY");
 
+            //TODO: Test
             if (PlayerPrefs.GetString("isFlipped") == "true")
             {
                 mySpriteRenderer.flipX = true;
@@ -127,22 +138,23 @@ public class PlayerMovement : MonoBehaviour
 
     private void Update()
     {
+        //If the Q key is pressed, a menu will either appear or hide based on a boolean
         if (Input.GetKeyDown(KeyCode.Q) == true)
         {
             ToggleMenu();
         }
 
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            StartBattle("Encounter");
-        }
+        //if (Input.GetKeyDown(KeyCode.H) == true)
+        //{
+        //    HealStickmon();
+        //}
     }
 
     private void FixedUpdate()
     {
         #region Moving
 
-        //Moving
+        //If a key used for moving is being pressed
         if (movementInput != Vector2.zero)
         {
             bool canMove = TryMove(movementInput);
@@ -181,6 +193,7 @@ public class PlayerMovement : MonoBehaviour
 
     #region Moving
 
+    //If the player can move and it not walking against a collider, this will return true
     private bool TryMove(Vector2 direction)
     {
         if (direction != Vector2.zero)
@@ -212,11 +225,16 @@ public class PlayerMovement : MonoBehaviour
 
     #region BattleScene        
 
+    /// <summary>
+    /// Detects continuous collision with a collider
+    /// </summary>
+    /// <param name="collision"></param>
     private void OnTriggerStay2D(Collider2D collision)
     {
+        //Based on the grass area the max level can differ
         if (collision.tag == "FirstGrass")
         {
-            PlayerPrefs.SetInt("MaxLevel", 5);
+            PlayerPrefs.SetInt("MaxEncounterLevel", 7);
             if (isWalking == true)
             {
                 CheckGrass("firstArea");
@@ -225,25 +243,32 @@ public class PlayerMovement : MonoBehaviour
 
         if (collision.tag == "SecondGrass")
         {
-            PlayerPrefs.SetInt("MaxLevel", 15);
+            PlayerPrefs.SetInt("MaxEncounterLevel", 15);
             if (isWalking == true)
             {
                 CheckGrass("firstArea");
             }
         }
 
-        if (collision.tag == "BattleDetector")
+        //If the player is in contact with the collider with this tag, an arranged battle will start
+        if (collision.tag == "FirstBattleDetector")
         {
             if (Input.GetKeyDown(KeyCode.E) == true)
             {
+                PlayerPrefs.SetInt("MaxLevel", 13);
                 StartBattle("SetBattle");
             }
         }
     }
 
+    /// <summary>
+    /// Gets a random number between 0 and 150 and if that random number is 5, a random ecnounter will appear. 
+    /// Based in the area there will be a max level
+    /// </summary>
+    /// <param name="area"></param>
     private void CheckGrass(string area)
     {
-        float encounter = Random.Range(0, 150);
+        float encounter = Random.Range(0, 150);        
 
         if (encounter == 5)
         {
@@ -252,6 +277,11 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Saves the current player positions for when the player switches back to this scene and loads the other scene.
+    /// It also defines wether the current battle is a random encounter or an arranged battle
+    /// </summary>
+    /// <param name="battleType"></param>
     private void StartBattle(string battleType)
     {
         PlayerPrefs.SetFloat("PlayerPositionX", myBody.position.x);
@@ -275,6 +305,10 @@ public class PlayerMovement : MonoBehaviour
 
     #region HealingStickmon
 
+    /// <summary>
+    /// When the player is in contact with the healer gameobject it heals all the Stickmon
+    /// </summary>
+    /// <param name="collision"></param>
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.tag == "Healer")
@@ -283,6 +317,10 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Heals all the Stickmon if they're not at full health already.
+    /// Also shows a message after healing or not.
+    /// </summary>
     private void HealStickmon()
     {
         bool allFullHealth = true;
@@ -315,6 +353,10 @@ public class PlayerMovement : MonoBehaviour
 
     #region ShortMessage
 
+    /// <summary>
+    /// Hides the message regarding healing after two seconds this function has been called
+    /// </summary>
+    /// <returns></returns>
     IEnumerator HideMessage()
     {
         yield return new WaitForSeconds(2);
@@ -325,6 +367,9 @@ public class PlayerMovement : MonoBehaviour
 
     #region ManuPanel
 
+    /// <summary>
+    /// Defines what UI elements will show what data on the menu
+    /// </summary>
     private void DefineMenuData()
     {
         List<CurrentStickmon> allAlliedStickmon = GameManagerScript.myGameManagerScript.GetAllAlliedStickmon();
@@ -335,7 +380,7 @@ public class PlayerMovement : MonoBehaviour
 
             if (count == 0)
             {
-                firstStickmonImage.sprite = currentAlliedStickmon.GetStickmonSprite();
+                firstStickmonImage.sprite = currentAlliedStickmon.GetNormalStickmonImage();
                 firstStickmonNameText.text = currentAlliedStickmon.GetStickmonName();
                 firstStickmonLevelHealthText.text = $"Level: {currentAlliedStickmon.GetStickmonLevel()}, {currentAlliedStickmon.GetCurrentHealthPoints()}/{currentAlliedStickmon.GetMaxHealthPoints()}";
 
@@ -353,7 +398,7 @@ public class PlayerMovement : MonoBehaviour
             }
             if (count == 1)
             {
-                secondStickmonImage.sprite = currentAlliedStickmon.GetStickmonSprite();
+                secondStickmonImage.sprite = currentAlliedStickmon.GetNormalStickmonImage();
                 secondStickmonNameText.text = currentAlliedStickmon.GetStickmonName();
                 secondStickmonLevelHealthText.text = $"Level: {currentAlliedStickmon.GetStickmonLevel()}, {currentAlliedStickmon.GetCurrentHealthPoints()}/{currentAlliedStickmon.GetMaxHealthPoints()}";
 
@@ -370,7 +415,7 @@ public class PlayerMovement : MonoBehaviour
             }
             if (count == 2)
             {
-                thirdStickmonImage.sprite = currentAlliedStickmon.GetStickmonSprite();
+                thirdStickmonImage.sprite = currentAlliedStickmon.GetNormalStickmonImage();
                 thirdStickmonNameText.text = currentAlliedStickmon.GetStickmonName();
                 thirdStickmonLevelHealthText.text = $"Level: {currentAlliedStickmon.GetStickmonLevel()}, {currentAlliedStickmon.GetCurrentHealthPoints()}/{currentAlliedStickmon.GetMaxHealthPoints()}";
 
@@ -392,6 +437,11 @@ public class PlayerMovement : MonoBehaviour
 
     #region ToggleFunctions
 
+    /// <summary>
+    /// Toggles the canvas over the walking scene.
+    /// That canvas will either show the message for healing or the menu
+    /// </summary>
+    /// <param name="status"></param>
     private void ToggleOverlay(string status)
     {
         if (status == "message")
@@ -436,6 +486,10 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Appears and disappears the menu based on a boolean.
+    /// When the menu is open, the player can't move the character
+    /// </summary>
     private void ToggleMenu()
     {
         if (menuIsOpen == false)
@@ -457,14 +511,70 @@ public class PlayerMovement : MonoBehaviour
 
     #region ChangeStickmonPositions
 
+    /// <summary>
+    /// Assigns either the second or third Stickmon as the first one.
+    /// </summary>
+    /// <param name="position"></param>
     public void AssignAsFirstStickmon(string position)
     {
         CurrentStickmon currentFirstStickmon = GameManagerScript.myGameManagerScript.GetFirstAlliedStickmon();
         GameManagerScript.myGameManagerScript.SwapStickmonPositions(currentFirstStickmon, position);
-        ToggleMenu();
+        DefineMenuData();        
     }
 
     #endregion
+
+    #endregion
+
+    #region Save
+
+    /// <summary>
+    /// Checks the current allied Stickmon and based on that calls another function to save them with PlayerPrefs
+    /// </summary>
+    private void SaveProgress()
+    {
+        int amountOfStickmon = GameManagerScript.myGameManagerScript.GetAllAlliedStickmon().Count;
+        PlayerPrefs.SetInt("AmountOfStickmon", amountOfStickmon);
+
+        CurrentStickmon currentAlliedStickmon = GameManagerScript.myGameManagerScript.GetFirstAlliedStickmon();
+        SaveAlliedStickmon("First", currentAlliedStickmon);
+        if (amountOfStickmon > 1)
+        {
+            currentAlliedStickmon = GameManagerScript.myGameManagerScript.GetAllAlliedStickmon()[1];
+            SaveAlliedStickmon("Second", currentAlliedStickmon);
+        }
+        if (amountOfStickmon > 2)
+        {
+            currentAlliedStickmon = GameManagerScript.myGameManagerScript.GetAllAlliedStickmon()[2];
+            SaveAlliedStickmon("Third", currentAlliedStickmon);
+        }
+        PlayerPrefs.Save();
+    }
+
+    /// <summary>
+    /// Based on data given by parameters, this will save the data in the PlayerPrefs
+    /// </summary>
+    /// <param name="position"></param>
+    /// <param name="currentAlliedStickmon"></param>
+    private void SaveAlliedStickmon(string position, CurrentStickmon currentAlliedStickmon)
+    {
+        List<StickmonMove> allCurrentStickmonMoves = currentAlliedStickmon.GetAllStickmonMoves();
+
+        PlayerPrefs.SetInt($"{position}StickmonLevel", currentAlliedStickmon.GetStickmonLevel());
+
+        PlayerPrefs.SetFloat($"{position}StickmonCurrentHealth", currentAlliedStickmon.GetCurrentHealthPoints());
+        PlayerPrefs.SetFloat($"{position}StickmonMaxHealth", currentAlliedStickmon.GetMaxHealthPoints());
+        PlayerPrefs.SetFloat($"{position}StickmonExperiencePoints", currentAlliedStickmon.GetExperiencePoints());
+
+        PlayerPrefs.SetString($"{position}StickmonName", currentAlliedStickmon.GetStickmonName());
+        PlayerPrefs.SetString($"{position}StickmonFirstMove", allCurrentStickmonMoves[0].GetMoveName());
+        PlayerPrefs.SetString($"{position}StickmonSecondMove", allCurrentStickmonMoves[1].GetMoveName());
+
+        if (allCurrentStickmonMoves.Count > 2)
+        {
+            PlayerPrefs.SetString($"{position}StickmonThidrMove", allCurrentStickmonMoves[2].GetMoveName());
+        }
+    }
 
     #endregion
 }

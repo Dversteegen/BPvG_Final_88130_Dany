@@ -5,8 +5,9 @@ TagManager:
   serializedVersion: 2
   tags:
   - Healer
-  - BattleDetector
   - FirstGrass
+  - FirstBattleDetector
+  - SecondBattleDetector
   layers:
   - Default
   - TransparentFX

@@ -11,10 +11,11 @@ public class Encounter
     private float _currentHealth;
 
     private Sprite _stickmonImage;
+    private Sprite _stickmonBackImage;
 
     private List<StickmonMove> _allmoves;
 
-    public Encounter(string encounterName, int encounterLevel, float maxHealth, float currentHealth, List<StickmonMove> allEncounterMoves, Sprite stickmonImage)
+    public Encounter(string encounterName, int encounterLevel, float maxHealth, float currentHealth, List<StickmonMove> allEncounterMoves, Sprite stickmonImage, Sprite stickmonBackImage)
     {
         _name = encounterName;
         _level = encounterLevel;
@@ -22,6 +23,7 @@ public class Encounter
         _currentHealth = currentHealth;
         _allmoves = allEncounterMoves;
         _stickmonImage = stickmonImage;
+        _stickmonBackImage = stickmonBackImage;
     }
 
     #region GetFunctions
@@ -51,15 +53,25 @@ public class Encounter
         return _allmoves;
     }
 
-    public Sprite GetEncounterImage()
+    public Sprite GetEncounterNormalImage()
     {
         return _stickmonImage;
+    }
+
+    public Sprite GetEncounterBackImage()
+    {
+        return _stickmonBackImage;
     }
 
     #endregion
 
     #region BattleFunctions
 
+    /// <summary>
+    /// Deals damage to the Encounter and returns wether its health points are zero or not
+    /// </summary>
+    /// <param name="amountOfDamage"></param>
+    /// <returns></returns>
     public bool DealDamage(float amountOfDamage)
     {
         if (_currentHealth - amountOfDamage <= 0)

@@ -5,8 +5,10 @@ using System.Linq;
 
 public class GameManagerScript : MonoBehaviour
 {
+    //With this being static I can access it from every script, so all the data won't get lost
     public static GameManagerScript myGameManagerScript;
 
+    //List of objects
     private List<StickmonMove> myStickmonMoves;
     private List<Stickmon> myStickmon;
     private List<CurrentStickmon> myAlliedStickmon;    
@@ -28,6 +30,7 @@ public class GameManagerScript : MonoBehaviour
         MakeThisTheOnlyGameManager();
     }    
 
+    //Prevents multiple objects of this type getting made
     void MakeThisTheOnlyGameManager()
     {
         if (myGameManagerScript == null)
@@ -50,11 +53,41 @@ public class GameManagerScript : MonoBehaviour
         myStickmon.Add(newStickmon);
     }
 
+    //Check
     public Stickmon GetFirstStickmon()
+    {
+        Stickmon firstStickmon = myStickmon.Where(stickmon => stickmon.GetStickmonName() == "Julian").Single();
+        //foreach (Stickmon stickmon in myStickmon)
+        //{
+        //    if (stickmon.GetStickmonName() == "Julian")
+        //    {
+        //        return stickmon;
+        //    }
+        //}
+        return firstStickmon;
+    }
+
+    /// <summary>
+    /// Returns a random Stickmon which is not Julian
+    /// </summary>
+    /// <returns></returns>
+    public Stickmon GetRandomStickmon()
+    {
+        List<Stickmon> allOpponentStickmon = myStickmon.Where(stickmon => stickmon.GetStickmonName() != "Julian").ToList();
+
+        Stickmon currentStickmon = allOpponentStickmon[Random.Range(0, allOpponentStickmon.Count)];
+        return currentStickmon;
+    }
+
+    /// <summary>
+    /// Returns the Stickmon with the name Paul
+    /// </summary>
+    /// <returns></returns>
+    public Stickmon GetStickmonPaul()
     {
         foreach (Stickmon stickmon in myStickmon)
         {
-            if (stickmon.GetStickmonName() == "Julian")
+            if (stickmon.GetStickmonName() == "Paul")
             {
                 return stickmon;
             }
@@ -62,12 +95,24 @@ public class GameManagerScript : MonoBehaviour
         return null;
     }
 
-    public Stickmon GetRandomStickmon()
+    /// <summary>
+    /// Returns either the normal or the back sprite of the Stickmon belonging to the name
+    /// </summary>
+    /// <param name="name"></param>
+    /// <param name="type"></param>
+    /// <returns></returns>
+    public Sprite GetStickmonByImageName(string name, string type)
     {
-        List<Stickmon> allOpponentStickmon = myStickmon.Where(stickmon => stickmon.GetStickmonName() != "Julian").ToList();
+        Stickmon currentStickmon = myStickmon.Where(stickmon => stickmon.GetStickmonName() == name).Single();
 
-        Stickmon currentStickmon = allOpponentStickmon[Random.Range(0, allOpponentStickmon.Count)];
-        return currentStickmon;
+        if (type == "normal")
+        {
+            return currentStickmon.GetStickmonImage("normal");
+        }
+        else
+        {
+            return currentStickmon.GetStickmonImage("back");
+        }
     }
 
     #endregion
@@ -79,16 +124,33 @@ public class GameManagerScript : MonoBehaviour
         myStickmonMoves.Add(newStickmonMove);
     }
 
-    public StickmonMove GetRandomStandardStickmonMove()
+    /// <summary>
+    /// Returns a random StickmonMove which is withing the two values
+    /// </summary>
+    /// <param name="minimumDamage"></param>
+    /// <param name="maximumDamage"></param>
+    /// <returns></returns>
+    public StickmonMove GetRandomStickmonMove(int minimumDamage, int maximumDamage)
     {
-        List<StickmonMove> allPossibleMoves = myStickmonMoves.Where(move => move.GetAmountOfDamage() > 0 && move.GetAmountOfDamage() < 6).Select(move => move).ToList();
+        List<StickmonMove> allPossibleMoves = myStickmonMoves
+            .Where(move => move.GetAmountOfDamage() > minimumDamage && move.GetAmountOfDamage() < maximumDamage)
+            .Select(move => move).ToList();
 
         return allPossibleMoves[Random.Range(0, allPossibleMoves.Count)];
     }
 
-    public StickmonMove GetRandomNewStickmonMove(StickmonMove firstStickmonMove)
+    /// <summary>
+    /// Returns a random StickmonMove which is witin the two values and not included in the list given as parameter
+    /// </summary>
+    /// <param name="minimumDamage"></param>
+    /// <param name="maximumDamage"></param>
+    /// <param name="currentStickmonMoves"></param>
+    /// <returns></returns>
+    public StickmonMove GetNewRandomStickmonMove(int minimumDamage, int maximumDamage, List<StickmonMove> currentStickmonMoves)
     {
-        List<StickmonMove> allPossibleMoves = myStickmonMoves.Where(move => move != firstStickmonMove && move.GetAmountOfDamage() >= 6).Select(move => move).ToList();
+        List<StickmonMove> allPossibleMoves = myStickmonMoves
+            .Where(move => move.GetAmountOfDamage() > minimumDamage && move.GetAmountOfDamage() < maximumDamage && currentStickmonMoves.Contains(move) == false)
+            .Select(move => move).ToList();
 
         return allPossibleMoves[Random.Range(0, allPossibleMoves.Count)];
     }
@@ -96,6 +158,17 @@ public class GameManagerScript : MonoBehaviour
     public List<StickmonMove> GetAllStickmonMoves()
     {
         return myStickmonMoves;
+    }
+
+    /// <summary>
+    /// Returns a StickmonMove by name
+    /// </summary>
+    /// <param name="moveName"></param>
+    /// <returns></returns>
+    public StickmonMove GetStickmonMoveByName(string moveName)
+    {
+        StickmonMove currentMove = myStickmonMoves.Where(move => move.GetMoveName() == moveName).Single();
+        return currentMove;
     }
 
     #endregion
@@ -118,6 +191,10 @@ public class GameManagerScript : MonoBehaviour
 
     #region GetFunctions
 
+    /// <summary>
+    /// Gets the Stickmon who's at that moment the first one in the list
+    /// </summary>
+    /// <returns></returns>
     public CurrentStickmon GetFirstAlliedStickmon()
     {
         return myAlliedStickmon[0];
@@ -169,6 +246,9 @@ public class GameManagerScript : MonoBehaviour
 
     #region Methods
 
+    /// <summary>
+    /// Heals all allied the Stickmon
+    /// </summary>
     public void HealAllAlliedStickmon()
     {
         foreach (CurrentStickmon currentStickmon in myAlliedStickmon)
@@ -177,6 +257,11 @@ public class GameManagerScript : MonoBehaviour
         }        
     }
 
+    /// <summary>
+    /// Swaps positions between the first and either the second or third Stickmon
+    /// </summary>
+    /// <param name="currentFirstStickmon"></param>
+    /// <param name="position"></param>
     public void SwapStickmonPositions(CurrentStickmon currentFirstStickmon, string position)
     {
         if (position == "second")
