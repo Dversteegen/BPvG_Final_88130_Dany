@@ -73,16 +73,16 @@ public class BattleSceneScript : MonoBehaviour
     private bool optionToRecruit = false;
     private bool currentStickmonDied = false;
     private bool outOfStickmon = false;
+    private bool paulIsBeaten = false;
 
     //Array
     private int[] allLevelBarriers = new int[] { 5, 11, 18, 26, 35, 47, 61, 78, 98, 123, 153 };
 
     //Lists
-    List<string> upComingLines = new List<string>();
-    List<Encounter> allCurrentEncounters = new List<Encounter>();
+    List<string> upComingLines = new List<string>();    
 
     #endregion
-    
+
     void Start()
     {
         ToggleRecruitElements("disable");
@@ -106,15 +106,21 @@ public class BattleSceneScript : MonoBehaviour
 
     #region SetUpPlayer
 
+    /// <summary>
+    /// Gets the first healthy Stickmon and sets up the layout of the battle scene based of the data.
+    /// </summary>
     private void SetUpPlayer()
     {
         CurrentStickmon firstStickmon = GameManagerScript.myGameManagerScript.GetFirstHealthyAllliedStickmon();
         SetUpPlayerStickmon(firstStickmon);
     }
 
+    /// <summary>
+    /// Sets up the battle scene with the data receives as parameter
+    /// </summary>
+    /// <param name="firstStickmon"></param>
     private void SetUpPlayerStickmon(CurrentStickmon firstStickmon)
     {
-        Debug.Log(firstStickmon.GetBackStickmonImage());
         playerImage.sprite = firstStickmon.GetBackStickmonImage();
         playerName.text = firstStickmon.GetStickmonName();
 
@@ -124,6 +130,10 @@ public class BattleSceneScript : MonoBehaviour
         SetUpPlayerData(firstStickmon);
     }
 
+    /// <summary>
+    /// Assigns the moves to the buttons
+    /// </summary>
+    /// <param name="allStickmonMoves"></param>
     private void SetUpPlayerMoves(List<StickmonMove> allStickmonMoves)
     {
         if (allStickmonMoves.Count > 0)
@@ -152,6 +162,10 @@ public class BattleSceneScript : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Assigns the health and level values to the correct text elements
+    /// </summary>
+    /// <param name="firstStickmon"></param>
     private void SetUpPlayerData(CurrentStickmon firstStickmon)
     {
         float maxHealth = firstStickmon.GetMaxHealthPoints();
@@ -166,12 +180,16 @@ public class BattleSceneScript : MonoBehaviour
 
     #region SetUpEncounter  
 
+    /// <summary>
+    /// Defines a random encounter, some variables of the encounter are dependend on data of the Encounter
+    /// </summary>
+    /// <returns></returns>
     private Encounter GetEncounter()
     {
         Stickmon encounter = GameManagerScript.myGameManagerScript.GetRandomStickmon();
         CurrentStickmon firstStickmon = GetFirstStickmon();
 
-        int encounterLevel = GetEncounterLevel(firstStickmon.GetStickmonLevel());        
+        int encounterLevel = GetEncounterLevel(firstStickmon.GetStickmonLevel());
 
         float baseHealth = encounter.GetBaseHealthPoints();
         float maxHealth = GetEncounterHealthPoints(encounterLevel, baseHealth);
@@ -184,12 +202,17 @@ public class BattleSceneScript : MonoBehaviour
         {
             currentStickmonMove = GameManagerScript.myGameManagerScript.GetNewRandomStickmonMove(3, 7, allEncounterStickmonMoves);
             allEncounterStickmonMoves.Add(currentStickmonMove);
-        }        
+        }
 
         Encounter currentEncounter = new Encounter(encounter.GetStickmonName(), encounterLevel, maxHealth, maxHealth, allEncounterStickmonMoves, encounter.GetStickmonImage("normal"), encounter.GetStickmonImage("back"));
         return currentEncounter;
     }
 
+    /// <summary>
+    /// Defines the level of the encounter
+    /// </summary>
+    /// <param name="firstStickmonLevel"></param>
+    /// <returns></returns>
     private int GetEncounterLevel(int firstStickmonLevel)
     {
         int maxLevel = PlayerPrefs.GetInt("MaxEncounterLevel");
@@ -226,13 +249,20 @@ public class BattleSceneScript : MonoBehaviour
         if (encounterLevel > maxLevel)
         {
             encounterLevel = maxLevel;
-        } else if (encounterLevel < 3)
+        }
+        else if (encounterLevel < 3)
         {
             encounterLevel = 3;
         }
         return encounterLevel;
     }
 
+    /// <summary>
+    /// Defines the max health points of the encounter
+    /// </summary>
+    /// <param name="encounterLevel"></param>
+    /// <param name="baseHealth"></param>
+    /// <returns></returns>
     private float GetEncounterHealthPoints(int encounterLevel, float baseHealth)
     {
         float maxHealth = baseHealth;
@@ -257,6 +287,11 @@ public class BattleSceneScript : MonoBehaviour
 
     #region SetUpSetOpponent
 
+    /// <summary>
+    /// Sets up the battle scene for the opponent for the arranged battle
+    /// </summary>
+    /// <param name="maxLevel"></param>
+    /// <returns></returns>
     private Encounter GetArrangedStickmon(int maxLevel)
     {
         float maxhealth = GetEncounterHealthPoints(maxLevel, 30);
@@ -278,6 +313,9 @@ public class BattleSceneScript : MonoBehaviour
 
     #endregion
 
+    /// <summary>
+    /// Assigns the right values to the right UI elements
+    /// </summary>
     private void SetUpOpponent()
     {
         string encounterName = currentEncounter.GetEncounterName();
@@ -291,6 +329,9 @@ public class BattleSceneScript : MonoBehaviour
 
     #region SetUpUI
 
+    /// <summary>
+    /// Sets up the text the battle scene displays when the scene gets loaded
+    /// </summary>
     private void SetUpText()
     {
         battleSceneText.text = $"Oh no, {currentEncounter.GetEncounterName()} has appeared!";
@@ -301,6 +342,9 @@ public class BattleSceneScript : MonoBehaviour
 
     #region DecideFirstAttacker
 
+    /// <summary>
+    /// Defines who gets to attack first
+    /// </summary>
     private void DefineFirstAttacker()
     {
         int randomNumber = Random.Range(0, 2);
@@ -324,6 +368,10 @@ public class BattleSceneScript : MonoBehaviour
 
     #region DealDamage
 
+    /// <summary>    
+    /// Based on the moveName given as parameter, get the amount of damage belonging to that move
+    /// </summary>
+    /// <param name="move"></param>
     public void GetAmountOfDamage(TextMeshProUGUI move)
     {
         if (playerCanAttack == true)
@@ -343,13 +391,16 @@ public class BattleSceneScript : MonoBehaviour
                 }
             }
 
-            //Check
-            battleSceneText.text = $"{GameManagerScript.myGameManagerScript.GetFirstStickmon().GetStickmonName()} used {moveName} and dealt {amountOfDamage} damage";
+            battleSceneText.text = $"{GameManagerScript.myGameManagerScript.GetFirstHealthyAllliedStickmon().GetStickmonName()} used {moveName} and dealt {amountOfDamage} damage";
             ToggleContinueTextElements("enable");
             DamageEncounter(amountOfDamage);
         }
     }
 
+    /// <summary>
+    /// Deal the amount of damage given as parameter to the opponent
+    /// </summary>
+    /// <param name="amountOfDamage"></param>
     private void DamageEncounter(int amountOfDamage)
     {
         bool isOpponentDead = currentEncounter.DealDamage(amountOfDamage);
@@ -361,6 +412,11 @@ public class BattleSceneScript : MonoBehaviour
         }
         else
         {
+            if (PlayerPrefs.GetString("BattleType") == "SetBattle")
+            {
+                paulIsBeaten = true;
+                battleSceneText.text = $"Congrats you beat Paul!";
+            }
             opponentHealth.text = $"Health: 0/{currentEncounter.GetEncounterMaxHealth()}";
             upComingLines.Add($"{currentEncounter.GetEncounterName()} isn't able to continue fighting");
             opponentImage.enabled = false;
@@ -372,6 +428,9 @@ public class BattleSceneScript : MonoBehaviour
 
     #region ExperiencePoints
 
+    /// <summary>
+    /// Calculate the amount of experience points the current Stickmon gets
+    /// </summary>
     private void CalculateExperiencePoints()
     {
         CurrentStickmon firstStickmon = GameManagerScript.myGameManagerScript.GetFirstHealthyAllliedStickmon();
@@ -394,6 +453,11 @@ public class BattleSceneScript : MonoBehaviour
         AddExperiencePoints(firstStickmon, amountOfExperiencePoints);
     }
 
+    /// <summary>
+    /// Add the amount of experience points to the current amount and detect if the Stickmon has increased a level
+    /// </summary>
+    /// <param name="firstStickmon"></param>
+    /// <param name="amountOfExperiencePoints"></param>
     private void AddExperiencePoints(CurrentStickmon firstStickmon, float amountOfExperiencePoints)
     {
         bool levelIncreased = firstStickmon.AddExperiencePoints(amountOfExperiencePoints);
@@ -404,6 +468,10 @@ public class BattleSceneScript : MonoBehaviour
         DefineRecruitment();
     }
 
+    /// <summary>
+    /// Increases the max health of the current Stickmon which can vary between 1 to 3
+    /// </summary>
+    /// <param name="firstStickmon"></param>
     private void LevelUpStickmon(CurrentStickmon firstStickmon)
     {
         float extraHealth = Random.Range(1, 4);
@@ -413,6 +481,9 @@ public class BattleSceneScript : MonoBehaviour
         upComingLines.Add($"{firstStickmon.GetStickmonName()} has their max health increased to {newHealth}");
     }
 
+    /// <summary>
+    /// Go back to the start scene
+    /// </summary>
     private void GoBack()
     {
         SceneManager.LoadScene("StartScene");
@@ -426,6 +497,9 @@ public class BattleSceneScript : MonoBehaviour
 
     #region DealDamage
 
+    /// <summary>
+    /// Get a random move the encounter has and deal the amount of damage belonging to that move to the player
+    /// </summary>
     private void OpponentAttack()
     {
         CurrentStickmon firstStickmon = GameManagerScript.myGameManagerScript.GetFirstHealthyAllliedStickmon();
@@ -465,6 +539,9 @@ public class BattleSceneScript : MonoBehaviour
         playerTurn = true;
     }
 
+    /// <summary>
+    /// Check if the player has any healthy Stickmon left and automatically switches in the next one or change the positions in the playerprefs to a position where the Stickmon get healed
+    /// </summary>
     private void CheckSquad()
     {
         if (GameManagerScript.myGameManagerScript.GetAmountOfHealthyStickmon() == 0)
@@ -491,12 +568,14 @@ public class BattleSceneScript : MonoBehaviour
 
     #region Recruiting
 
+    /// <summary>
+    /// Declare on a chance of 1 in 3 if the player can recruit the opponent
+    /// </summary>
     private void DefineRecruitment()
     {
         if (GameManagerScript.myGameManagerScript.GetAllAlliedStickmon().Count < 3)
         {
-            //int randomNumber = Random.Range(0, 3);
-            int randomNumber = 2;
+            int randomNumber = Random.Range(0, 3);
             if (randomNumber == 2)
             {
                 optionToRecruit = true;
@@ -505,6 +584,9 @@ public class BattleSceneScript : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Add the encounter to your squad
+    /// </summary>
     public void RecruitEncounter()
     {
         int level = currentEncounter.GetEncounterLevel();
@@ -516,8 +598,6 @@ public class BattleSceneScript : MonoBehaviour
         }
 
         CurrentStickmon newAlliedStickmon = new CurrentStickmon(currentEncounter, allLevelBarriers, currentAmountOfExperiencePoints);
-        Debug.Log(newAlliedStickmon.GetBackStickmonImage());
-        Debug.Log(newAlliedStickmon.GetNormalStickmonImage());
         GameManagerScript.myGameManagerScript.AddAlliedStickmon(newAlliedStickmon);
         upComingLines.Add($"{newAlliedStickmon.GetStickmonName()} has joined your squad, good luck!");
 
@@ -533,16 +613,16 @@ public class BattleSceneScript : MonoBehaviour
 
     #endregion
 
-    #region SetBattle
-
-    #endregion
-
     #endregion
 
     #region GeneralSceneFunctions
 
     #region ToggleFunctions
 
+    /// <summary>
+    /// Show or hide the Recruit button
+    /// </summary>
+    /// <param name="status"></param>
     private void ToggleRecruitElements(string status)
     {
         if (status == "disable")
@@ -559,6 +639,10 @@ public class BattleSceneScript : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Hide or show the Continue text button
+    /// </summary>
+    /// <param name="status"></param>
     private void ToggleContinueTextElements(string status)
     {
         if (status == "disable")
@@ -583,6 +667,9 @@ public class BattleSceneScript : MonoBehaviour
 
     #endregion
 
+    /// <summary>
+    /// This function keeps track of the flow of the battle
+    /// </summary>
     public void EnableAttacking()
     {
         if (continueButtonText.text == "Reject")
@@ -594,47 +681,50 @@ public class BattleSceneScript : MonoBehaviour
         }
         else
         {
-            if (upComingLines.Count > 0)
+            if (PlayerPrefs.GetString("BattleType") == "SetBattle" && paulIsBeaten == true)
             {
-                battleSceneText.text = upComingLines[0];
-                upComingLines.RemoveAt(0);
-                Debug.Log("EnableAttacking 1");
-            }
-            else if (playerTurn == true && battleIsOver == false && currentStickmonDied == false)
-            {
-                ToggleContinueTextElements("disable");
-
-                battleSceneText.text = $"Choose a move:";
-
-                playerCanAttack = true;
-                Debug.Log("EnableAttacking 2");
-            }
-            else if (playerTurn == false && battleIsOver == false && currentStickmonDied == false)
-            {
-                OpponentAttack();
-                ToggleContinueTextElements("enable");
-                Debug.Log("EnableAttacking 3");
-            }
-            else if (currentStickmonDied == true && battleIsOver == false)
-            {
-                CheckSquad();
-                Debug.Log("EnableAttacking 4");
-            }
-            else if (battleIsOver == true && experiencePointsCalculated == false && outOfStickmon == false)
-            {
-                CalculateExperiencePoints();
-                ToggleContinueTextElements("enable");
-                Debug.Log("EnableAttacking 5");
-            }
-            else if (optionToRecruit == true)
-            {
-                ToggleRecruitElements("enable");
-                ToggleContinueTextElements("recruitment");
-                Debug.Log("EnableAttacking 6");
+                SceneManager.LoadScene("BeginScene");
+                PlayerPrefs.DeleteAll();
+                GameManagerScript.myGameManagerScript = null;
             }
             else
             {
-                GoBack();
+                if (upComingLines.Count > 0)
+                {
+                    battleSceneText.text = upComingLines[0];
+                    upComingLines.RemoveAt(0);
+                }
+                else if (playerTurn == true && battleIsOver == false && currentStickmonDied == false)
+                {
+                    ToggleContinueTextElements("disable");
+
+                    battleSceneText.text = $"Choose a move:";
+
+                    playerCanAttack = true;
+                }
+                else if (playerTurn == false && battleIsOver == false && currentStickmonDied == false)
+                {
+                    OpponentAttack();
+                    ToggleContinueTextElements("enable");
+                }
+                else if (currentStickmonDied == true && battleIsOver == false)
+                {
+                    CheckSquad();
+                }
+                else if (battleIsOver == true && experiencePointsCalculated == false && outOfStickmon == false)
+                {
+                    CalculateExperiencePoints();
+                    ToggleContinueTextElements("enable");
+                }
+                else if (optionToRecruit == true)
+                {
+                    ToggleRecruitElements("enable");
+                    ToggleContinueTextElements("recruitment");
+                }
+                else
+                {
+                    GoBack();
+                }
             }
         }
     }
@@ -651,5 +741,4 @@ public class BattleSceneScript : MonoBehaviour
     }
 
     #endregion
-
 }

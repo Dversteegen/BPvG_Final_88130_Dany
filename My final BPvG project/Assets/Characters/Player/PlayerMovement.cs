@@ -230,7 +230,7 @@ public class PlayerMovement : MonoBehaviour
     /// </summary>
     /// <param name="collision"></param>
     private void OnTriggerStay2D(Collider2D collision)
-    {
+    {        
         //Based on the grass area the max level can differ
         if (collision.tag == "FirstGrass")
         {
@@ -241,26 +241,13 @@ public class PlayerMovement : MonoBehaviour
             }
         }
 
-        if (collision.tag == "SecondGrass")
-        {
-            PlayerPrefs.SetInt("MaxEncounterLevel", 15);
-            if (isWalking == true)
-            {
-                CheckGrass("firstArea");
-            }
-        }
-
-        //If the player is in contact with the collider with this tag, an arranged battle will start
         if (collision.tag == "FirstBattleDetector")
         {
-            if (Input.GetKeyDown(KeyCode.E) == true)
-            {
-                PlayerPrefs.SetInt("MaxLevel", 13);
-                StartBattle("SetBattle");
-            }
+            PlayerPrefs.SetInt("MaxLevel", 13);
+            StartBattle("SetBattle");
         }
     }
-
+    
     /// <summary>
     /// Gets a random number between 0 and 150 and if that random number is 5, a random ecnounter will appear. 
     /// Based in the area there will be a max level

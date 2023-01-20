@@ -186,7 +186,7 @@ public class StartScript : MonoBehaviour
     /// Starts a new game and removes all clears all the PlayerPrefs
     /// </summary>
     public void StartNewGame()
-    {
+    {        
         SetupData();
         AddFirstStickmon();
         PlayerPrefs.DeleteAll();
